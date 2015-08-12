@@ -1,6 +1,7 @@
 <?php
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
+use Wandu\Laravel\Repository\Stubs\User;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -21,7 +22,7 @@ $capsule->bootEloquent();
 
 $capsule->schema()->create('users', function (Blueprint $table) {
     $table->bigIncrements('id');
-    $table->string('username', 100);
+    $table->string('username', 100)->unique();
     $table->string('password', 100);
     $table->timestamps();
 });

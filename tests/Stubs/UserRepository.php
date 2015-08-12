@@ -12,5 +12,5 @@ class UserRepository implements RepositoryInterface
     protected $model = User::class;
 
     /** @var array */
-    protected $orderBy = ['id'];
+    protected $orderBy = ['id' => false]; // ORDER BY `id` DESC
 }

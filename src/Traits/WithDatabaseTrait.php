@@ -62,7 +62,7 @@ trait WithDatabaseTrait
      */
     public function updateItem($id, array $dataSet)
     {
-        if ($item = forward_static_call([$this->model, 'find'], $id)) {
+        if ($item = $this->getItem($id)) {
             $item->update($dataSet);
         }
         return $item;
@@ -79,10 +79,11 @@ trait WithDatabaseTrait
 
     /**
      * @param string $id
-     * @return bool
      */
     public function deleteItem($id)
     {
-        return forward_static_call(([$this->model, 'where']), ['uid' => $id])->delete();
+        if ($item = $this->getItem($id)) {
+            $item->delete();
+        }
     }
 }

@@ -1,7 +1,9 @@
 <?php
 namespace Wandu\Laravel\Repository;
 
+use Illuminate\Database\QueryException;
 use PHPUnit_Framework_TestCase;
+use Wandu\Laravel\Repository\Stubs\User;
 use Wandu\Laravel\Repository\Stubs\UserRepository;
 
 class PlainRepositoryTest extends PHPUnit_Framework_TestCase
@@ -9,19 +11,63 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
     /** @var UserRepository */
     protected $users;
 
+    /** @var User */
+    protected $user;
+
     public function setUp()
     {
+        User::truncate();
         $this->users = new UserRepository();
+
+        // salt
+        for ($i = 1; $i <= 100; $i++) {
+            $this->users->createItem(['username' => "dummy{$i}", 'password' => "dummy{$i}!!"]);
+        }
+        // specific user
+        $this->user = $this->users->createItem(['username' => 'wan2land', 'password' => 'wan2land!']);
+        for ($i = 101; $i <= 200; $i++) {
+            $this->users->createItem(['username' => "dummy{$i}", 'password' => "dummy{$i}!!"]);
+        }
     }
 
-    public function testCreate()
+    public function testCreateAndGet()
     {
-        $user = $this->users->createItem(['username' => 'wan2land', 'password' => 'wan2land!']);
+        $user = $this->users->createItem(['username' => 'newuser', 'password' => 'newuser!!!']);
 
         $this->assertEquals([
             'id' => $user['id'],
-            'username' => 'wan2land',
-            'password' => 'wan2land!'
+            'username' => 'newuser',
+            'password' => 'newuser!!!'
         ], $this->users->getItem($user['id'])->toArray());
     }
+
+    public function testUnableCreate()
+    {
+        try {
+            $this->users->createItem(['username' => 'wan2land', 'password' => 'wan2land..']);
+            $this->fail();
+        } catch (QueryException $e) {
+            $this->assertEquals(23000, $e->getCode()); // sql exception
+        }
+    }
+
+    public function testUpdate()
+    {
+        $this->users->updateItem($this->user['id'], [
+            'username' => 'changed'
+        ]);
+        $this->assertEquals([
+            'id' => $this->user['id'],
+            'username' => 'changed',
+            'password' => 'wan2land!',
+        ], $this->users->getItem($this->user['id'])->toArray());
+    }
+
+    public function testDelete()
+    {
+        $this->users->deleteItem($this->user['id']);
+        $this->assertNull($this->users->getItem($this->user['id']));
+    }
+
+
 }
