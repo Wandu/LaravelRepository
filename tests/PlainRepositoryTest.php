@@ -83,16 +83,31 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
 
     public function testGetNextItems()
     {
-        $users = $this->users->getNextItems($this->user['id']);
+        $users = $this->users->getNextItems($this->user['id'], 5);
 
         $this->assertInstanceOf(Collection::class, $users);
-//        $this->assert
+        $this->assertEquals(5, count($users));
+
+        $this->assertEquals($this->user->toArray(), $users->shift()->toArray());
+
+        $this->assertEquals('dummy50', $users->shift()['username']);
+        $this->assertEquals('dummy49', $users->shift()['username']);
+        $this->assertEquals('dummy48', $users->shift()['username']);
+        $this->assertEquals('dummy47', $users->shift()['username']);
     }
 
     public function testGetPrevItems()
     {
-        $users = $this->users->getPrevItems($this->user['id']);
+        $users = $this->users->getPrevItems($this->user['id'], 5);
 
         $this->assertInstanceOf(Collection::class, $users);
+        $this->assertEquals(5, count($users));
+
+        $this->assertEquals('dummy54', $users->shift()['username']);
+        $this->assertEquals('dummy53', $users->shift()['username']);
+        $this->assertEquals('dummy52', $users->shift()['username']);
+        $this->assertEquals('dummy51', $users->shift()['username']);
+
+        $this->assertEquals($this->user->toArray(), $users->shift()->toArray());
     }
 }

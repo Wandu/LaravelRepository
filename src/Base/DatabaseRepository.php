@@ -23,8 +23,6 @@ abstract class DatabaseRepository implements RepositoryInterface
         return $this->applyOrderBy($this->createQuery())->first();
     }
 
-
-
     /**
      * @param string $itemId
      * @param int $length
@@ -32,7 +30,10 @@ abstract class DatabaseRepository implements RepositoryInterface
      */
     public function getNextItems($itemId, $length = 10)
     {
-        return $this->createQuery()->get();
+        return $this->applyWhere(
+            $this->applyOrderBy($this->createQuery()),
+            $this->getItem($itemId)
+        )->take($length)->get();
     }
 
     /**
@@ -42,7 +43,11 @@ abstract class DatabaseRepository implements RepositoryInterface
      */
     public function getPrevItems($itemId, $length = 10)
     {
-        return forward_static_call([$this->model, 'where'], 'id', '10101010')->get();
+        return $this->applyWhere(
+            $this->applyOrderBy($this->createQuery(), true),
+            $this->getItem($itemId),
+            true
+        )->take($length)->get()->reverse();
     }
 
     /**
@@ -88,12 +93,27 @@ abstract class DatabaseRepository implements RepositoryInterface
 
     /**
      * @param Builder $query
+     * @param bool $reversed
      * @return Builder
      */
-    protected function applyOrderBy($query)
+    protected function applyOrderBy(Builder $query, $reversed = false)
     {
         foreach ($this->orderBy as $key => $asc) {
-            $query = forward_static_call([$this->model, 'orderBy'], $key, $asc ? 'ASC' : 'DESC');
+            $query = $query->orderBy($key, $asc ^ $reversed ? 'ASC' : 'DESC');
+        }
+        return $query;
+    }
+
+    /**
+     * @param Builder $query
+     * @param Model $base
+     * @param bool $reversed
+     * @return Builder
+     */
+    protected function applyWhere(Builder $query, Model $base, $reversed = false)
+    {
+        foreach ($this->orderBy as $key => $asc) {
+            $query = $query->where($key, $asc ^ $reversed ? '>=' : '<=', $base[$key]);
         }
         return $query;
     }
