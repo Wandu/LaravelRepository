@@ -1,7 +1,9 @@
 <?php
+use Illuminate\Cache\FileStore;
+use Illuminate\Cache\Repository;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
-use Wandu\Laravel\Repository\Stubs\User;
+use Illuminate\Filesystem\Filesystem;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -26,3 +28,6 @@ $capsule->schema()->create('users', function (Blueprint $table) {
     $table->string('password', 100);
     $table->timestamps();
 });
+
+$fileSystem = new Filesystem();
+$cache = new Repository(new FileStore($fileSystem, __DIR__ .'/cache'));

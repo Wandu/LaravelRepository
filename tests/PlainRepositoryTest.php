@@ -83,10 +83,10 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
 
     public function testGetNextItems()
     {
-        $users = $this->users->getNextItems($this->user['id'], 5);
+        $users = $this->users->getNextItems($this->user['id']);
 
         $this->assertInstanceOf(Collection::class, $users);
-        $this->assertEquals(5, count($users));
+        $this->assertEquals(10, count($users));
 
         $this->assertEquals($this->user->toArray(), $users->shift()->toArray());
 
@@ -94,15 +94,25 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('dummy49', $users->shift()['username']);
         $this->assertEquals('dummy48', $users->shift()['username']);
         $this->assertEquals('dummy47', $users->shift()['username']);
+        $this->assertEquals('dummy46', $users->shift()['username']);
+        $this->assertEquals('dummy45', $users->shift()['username']);
+        $this->assertEquals('dummy44', $users->shift()['username']);
+        $this->assertEquals('dummy43', $users->shift()['username']);
+        $this->assertEquals('dummy42', $users->shift()['username']);
     }
 
     public function testGetPrevItems()
     {
-        $users = $this->users->getPrevItems($this->user['id'], 5);
+        $users = $this->users->getPrevItems($this->user['id']);
 
         $this->assertInstanceOf(Collection::class, $users);
-        $this->assertEquals(5, count($users));
+        $this->assertEquals(10, count($users));
 
+        $this->assertEquals('dummy59', $users->shift()['username']);
+        $this->assertEquals('dummy58', $users->shift()['username']);
+        $this->assertEquals('dummy57', $users->shift()['username']);
+        $this->assertEquals('dummy56', $users->shift()['username']);
+        $this->assertEquals('dummy55', $users->shift()['username']);
         $this->assertEquals('dummy54', $users->shift()['username']);
         $this->assertEquals('dummy53', $users->shift()['username']);
         $this->assertEquals('dummy52', $users->shift()['username']);
