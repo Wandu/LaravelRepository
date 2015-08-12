@@ -25,5 +25,10 @@
         "phpunit/phpunit": "^4.8",
         "illuminate/filesystem": "^5.1",
         "league/flysystem": "^1.0"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }

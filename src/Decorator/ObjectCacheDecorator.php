@@ -2,8 +2,6 @@
 namespace Wandu\Laravel\Repository\Decorator;
 
 use Illuminate\Contracts\Cache\Repository as CacheContract;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Wandu\Laravel\Repository\RepositoryInterface;
 
 class ObjectCacheDecorator implements RepositoryInterface
