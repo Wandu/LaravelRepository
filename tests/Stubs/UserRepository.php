@@ -1,13 +1,10 @@
 <?php
 namespace Wandu\Laravel\Repository\Stubs;
 
-use Wandu\Laravel\Repository\RepositoryInterface;
-use Wandu\Laravel\Repository\Traits\WithDatabaseTrait;
+use Wandu\Laravel\Repository\Base\DatabaseRepository;
 
-class UserRepository implements RepositoryInterface
+class UserRepository extends DatabaseRepository
 {
-    use WithDatabaseTrait;
-
     /** @var string */
     protected $model = User::class;
 

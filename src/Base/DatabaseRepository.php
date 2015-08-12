@@ -1,18 +1,29 @@
 <?php
-namespace Wandu\Laravel\Repository\Traits;
+namespace Wandu\Laravel\Repository\Base;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Wandu\Laravel\Repository\NotDefinedModelException;
+use Wandu\Laravel\Repository\RepositoryInterface;
 
-trait WithDatabaseTrait
+abstract class DatabaseRepository implements RepositoryInterface
 {
+    /** @var string */
+    protected $model;
+
+    /** @var array */
+    protected $orderBy = [];
+
     /**
      * @return Model
      */
     public function getFirstItem()
     {
-
+        return $this->applyOrderBy($this->createQuery())->first();
     }
+
+
 
     /**
      * @param string $itemId
@@ -21,7 +32,7 @@ trait WithDatabaseTrait
      */
     public function getNextItems($itemId, $length = 10)
     {
-
+        return $this->createQuery()->get();
     }
 
     /**
@@ -31,20 +42,8 @@ trait WithDatabaseTrait
      */
     public function getPrevItems($itemId, $length = 10)
     {
-
+        return forward_static_call([$this->model, 'where'], 'id', '10101010')->get();
     }
-//
-//    /**
-//     * @param int $limit
-//     * @return mixed
-//     */
-//    public function getItems($limit = -1)
-//    {
-//        if ($limit === -1) {
-//            return forward_static_call([$this->model, 'paginate']);
-//        }
-//        return forward_static_call([$this->model, 'paginate'],$limit);
-//    }
 
     /**
      * @param string $id
@@ -52,7 +51,7 @@ trait WithDatabaseTrait
      */
     public function getItem($id)
     {
-        return forward_static_call([$this->model, 'find'], $id);
+        return $this->createQuery()->find($id);
     }
 
     /**
@@ -85,5 +84,36 @@ trait WithDatabaseTrait
         if ($item = $this->getItem($id)) {
             $item->delete();
         }
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    protected function applyOrderBy($query)
+    {
+        foreach ($this->orderBy as $key => $asc) {
+            $query = forward_static_call([$this->model, 'orderBy'], $key, $asc ? 'ASC' : 'DESC');
+        }
+        return $query;
+    }
+
+    /**
+     * @return Builder
+     */
+    protected function createQuery()
+    {
+        return $this->createModel()->newQuery();
+    }
+
+    /**
+     * @return Model
+     */
+    protected function createModel()
+    {
+        if (isset($this->model)) {
+            return new $this->model;
+        }
+        throw new NotDefinedModelException;
     }
 }

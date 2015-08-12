@@ -1,6 +1,7 @@
 <?php
 namespace Wandu\Laravel\Repository;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\QueryException;
 use PHPUnit_Framework_TestCase;
 use Wandu\Laravel\Repository\Stubs\User;
@@ -20,12 +21,12 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
         $this->users = new UserRepository();
 
         // salt
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 50; $i++) {
             $this->users->createItem(['username' => "dummy{$i}", 'password' => "dummy{$i}!!"]);
         }
         // specific user
         $this->user = $this->users->createItem(['username' => 'wan2land', 'password' => 'wan2land!']);
-        for ($i = 101; $i <= 200; $i++) {
+        for ($i = 51; $i <= 100; $i++) {
             $this->users->createItem(['username' => "dummy{$i}", 'password' => "dummy{$i}!!"]);
         }
     }
@@ -69,5 +70,29 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertNull($this->users->getItem($this->user['id']));
     }
 
+    public function testGetFirstItem()
+    {
+        $user = $this->users->getFirstItem();
 
+        $this->assertEquals([
+            'id' => $user['id'],
+            'username' => 'dummy100',
+            'password' => 'dummy100!!',
+        ], $user->toArray());
+    }
+
+    public function testGetNextItems()
+    {
+        $users = $this->users->getNextItems($this->user['id']);
+
+        $this->assertInstanceOf(Collection::class, $users);
+//        $this->assert
+    }
+
+    public function testGetPrevItems()
+    {
+        $users = $this->users->getPrevItems($this->user['id']);
+
+        $this->assertInstanceOf(Collection::class, $users);
+    }
 }
