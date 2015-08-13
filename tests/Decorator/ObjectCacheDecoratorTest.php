@@ -53,29 +53,29 @@ class ObjectCacheDecoratorTest extends PlainRepositoryTest
     {
         // before delete
         $nextItems = $this->users->getNextItems(80);
-        $this->assertEquals($this->users->getItem(75)->toArray(), $nextItems[5]->toArray());
+        $this->assertEquals($this->users->getItem(75)->toArray(), $nextItems[4]->toArray());
 
         $prevItems = $this->users->getPrevItems(70);
-        $this->assertEquals($this->users->getItem(75)->toArray(), $prevItems[4]->toArray());
+        $this->assertEquals($this->users->getItem(75)->toArray(), $prevItems[5]->toArray());
 
         $this->users->deleteItem(75);
 
         // after delete
         $nextItems = $this->users->getNextItems(80);
-        $this->assertEquals($this->users->getItem(74)->toArray(), $nextItems[5]->toArray());
+        $this->assertEquals($this->users->getItem(74)->toArray(), $nextItems[4]->toArray());
 
         $prevItems = $this->users->getPrevItems(70);
-        $this->assertEquals($this->users->getItem(76)->toArray(), $prevItems[4]->toArray());
+        $this->assertEquals($this->users->getItem(76)->toArray(), $prevItems[5]->toArray());
     }
 
     public function testCacheAfterUpdate()
     {
         // before delete
         $nextItems = $this->users->getNextItems(80);
-        $this->assertEquals($this->users->getItem(75)->toArray(), $nextItems[5]->toArray());
+        $this->assertEquals($this->users->getItem(75)->toArray(), $nextItems[4]->toArray());
 
         $prevItems = $this->users->getPrevItems(70);
-        $this->assertEquals($this->users->getItem(75)->toArray(), $prevItems[4]->toArray());
+        $this->assertEquals($this->users->getItem(75)->toArray(), $prevItems[5]->toArray());
 
         $this->users->updateItem(75, [
             'username' => 'updated!!'
@@ -87,13 +87,13 @@ class ObjectCacheDecoratorTest extends PlainRepositoryTest
             'id' => 75,
             'username' => 'updated!!',
             'password' => 'dummy74!!'
-        ], $nextItems[5]->toArray());
+        ], $nextItems[4]->toArray());
 
         $prevItems = $this->users->getPrevItems(70);
         $this->assertEquals([
             'id' => 75,
             'username' => 'updated!!',
             'password' => 'dummy74!!'
-        ], $prevItems[4]->toArray());
+        ], $prevItems[5]->toArray());
     }
 }

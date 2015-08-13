@@ -113,7 +113,7 @@ abstract class DatabaseRepository implements RepositoryInterface
     protected function applyWhere(Builder $query, Model $base, $reversed = false)
     {
         foreach ($this->orderBy as $key => $asc) {
-            $query = $query->where($key, $asc ^ $reversed ? '>=' : '<=', $base[$key]);
+            $query = $query->where($key, $asc ^ $reversed ? '>' : '<', $base[$key]);
         }
         return $query;
     }

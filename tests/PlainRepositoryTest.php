@@ -88,7 +88,7 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Collection::class, $users);
         $this->assertEquals(10, count($users));
 
-        $this->assertEquals($this->user->toArray(), $users->shift()->toArray());
+        //$this->assertEquals($this->user->toArray(), $users->shift()->toArray());
 
         $this->assertEquals('dummy50', $users->shift()['username']);
         $this->assertEquals('dummy49', $users->shift()['username']);
@@ -99,6 +99,7 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('dummy44', $users->shift()['username']);
         $this->assertEquals('dummy43', $users->shift()['username']);
         $this->assertEquals('dummy42', $users->shift()['username']);
+        $this->assertEquals('dummy41', $users->shift()['username']);
     }
 
     public function testGetPrevItems()
@@ -108,6 +109,7 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf(Collection::class, $users);
         $this->assertEquals(10, count($users));
 
+        $this->assertEquals('dummy60', $users->shift()['username']);
         $this->assertEquals('dummy59', $users->shift()['username']);
         $this->assertEquals('dummy58', $users->shift()['username']);
         $this->assertEquals('dummy57', $users->shift()['username']);
@@ -118,6 +120,6 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('dummy52', $users->shift()['username']);
         $this->assertEquals('dummy51', $users->shift()['username']);
 
-        $this->assertEquals($this->user->toArray(), $users->shift()->toArray());
+        //$this->assertEquals($this->user->toArray(), $users->shift()->toArray());
     }
 }
