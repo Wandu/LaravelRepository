@@ -1,12 +1,8 @@
 {
     "name": "wandu/laravel-repository",
     "description": "For Laravel Repository Pattern",
-    "authors": [
-        {
-            "name": "Changwan Jun",
-            "email": "me@wani.kr"
-        }
-    ],
+    "keywords": ["wandu", "laravel", "repository", "data mapper"],
+    "license": "MIT",
     "require": {
         "illuminate/database": "^5.1",
         "illuminate/cache": "^5.1"
