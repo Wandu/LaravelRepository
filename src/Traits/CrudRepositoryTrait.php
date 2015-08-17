@@ -48,7 +48,7 @@ trait CrudRepositoryTrait
 
     /**
      * @todo to use data mapper (not active record)
-     * 
+     *
      * @param array $dataSet
      * @return Model
      */
