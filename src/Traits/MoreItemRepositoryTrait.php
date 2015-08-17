@@ -44,43 +44,4 @@ trait MoreItemRepositoryTrait
             true
         )->take($length)->get()->reverse();
     }
-
-    /**
-     * @param Builder $query
-     * @param bool $reversed
-     * @return Builder
-     */
-    protected function applyOrderBy(Builder $query, $reversed = false)
-    {
-        foreach ($this->getOrderBy() as $key => $asc) {
-            $query = $query->orderBy($key, $asc ^ $reversed ? 'ASC' : 'DESC');
-        }
-        return $query;
-    }
-
-    /**
-     * @param Builder $query
-     * @param Model $base
-     * @param bool $reversed
-     * @return Builder
-     */
-    protected function applyWhere(Builder $query, Model $base, $reversed = false)
-    {
-        // @todo
-        foreach ($this->getOrderBy() as $key => $asc) {
-            $query = $query->where($key, $asc ^ $reversed ? '>' : '<', $base[$key]);
-        }
-        return $query;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getOrderBy()
-    {
-        if (isset($this->orderBy)) {
-            return $this->orderBy;
-        }
-        throw new NotDefinedOrderByException;
-    }
 }

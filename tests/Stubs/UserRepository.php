@@ -1,10 +1,13 @@
 <?php
 namespace Wandu\Laravel\Repository\Stubs;
 
-use Wandu\Laravel\Repository\Base\DatabaseRepository;
+use Wandu\Laravel\Repository\PaginationRepositoryInterface;
+use Wandu\Laravel\Repository\Traits\PaginationRepositoryTrait;
 
-class UserRepository extends DatabaseRepository
+class UserRepository implements PaginationRepositoryInterface
 {
+    use PaginationRepositoryTrait;
+
     /** @var string */
     protected $model = User::class;
 
