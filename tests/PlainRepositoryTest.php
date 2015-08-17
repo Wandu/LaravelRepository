@@ -2,7 +2,6 @@
 namespace Wandu\Laravel\Repository;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\QueryException;
 use PHPUnit_Framework_TestCase;
 use Wandu\Laravel\Repository\Stubs\Article;
 use Wandu\Laravel\Repository\Stubs\ArticleRepository;
@@ -35,7 +34,7 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
 
     public function testCreateAndGet()
     {
-        $user = $this->articles->createItem(['content' => 'newuser', 'user' => 'newuser!!!']);
+        $user = $this->articles->createItem(['content' => 'newuser', 'user' => 'newuser!!!', 'vote' => null]);
 
         $this->assertEquals([
             'id' => $user['id'],

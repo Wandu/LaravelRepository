@@ -2,30 +2,32 @@
 namespace Wandu\Laravel\Repository\Decorator;
 
 use Wandu\Laravel\Repository\PlainRepositoryTest;
+use Wandu\Laravel\Repository\Stubs\Article;
+use Wandu\Laravel\Repository\Stubs\ArticleRepository;
 use Wandu\Laravel\Repository\Stubs\User;
 use Wandu\Laravel\Repository\Stubs\UserRepository;
 
 class ObjectCacheDecoratorTest extends PlainRepositoryTest
 {
     /** @var ObjectCacheDecorator */
-    protected $users;
+    protected $articles;
 
     /** @var User */
     protected $user;
 
     public function setUp()
     {
-        User::truncate();
-        $this->users = new ObjectCacheDecorator(new UserRepository(), $GLOBALS['cache']);
+        Article::truncate();
+        $this->articles = new ObjectCacheDecorator(new ArticleRepository(), $GLOBALS['cache']);
 
         // salt
         for ($i = 1; $i <= 50; $i++) {
-            $this->users->createItem(['username' => "dummy{$i}", 'password' => "dummy{$i}!!"]);
+            $this->articles->createItem(['content' => "dummy{$i}", 'user' => "dummy{$i}!!"]);
         }
         // specific user
-        $this->user = $this->users->createItem(['username' => 'wan2land', 'password' => 'wan2land!']);
+        $this->user = $this->articles->createItem(['content' => 'wan2land', 'user' => 'wan2land!']);
         for ($i = 51; $i <= 100; $i++) {
-            $this->users->createItem(['username' => "dummy{$i}", 'password' => "dummy{$i}!!"]);
+            $this->articles->createItem(['content' => "dummy{$i}", 'user' => "dummy{$i}!!"]);
         }
     }
 
@@ -52,48 +54,80 @@ class ObjectCacheDecoratorTest extends PlainRepositoryTest
     public function testCacheAfterDelete()
     {
         // before delete
-        $nextItems = $this->users->getNextItems(80);
-        $this->assertEquals($this->users->getItem(75)->toArray(), $nextItems[4]->toArray());
+        $nextItems = $this->articles->getNextItems(80);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'dummy74',
+            'user' => 'dummy74!!',
+            'vote' => null,
+        ], $nextItems[4]->toArray());
 
-        $prevItems = $this->users->getPrevItems(70);
-        $this->assertEquals($this->users->getItem(75)->toArray(), $prevItems[5]->toArray());
+        $prevItems = $this->articles->getPrevItems(70);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'dummy74',
+            'user' => 'dummy74!!',
+            'vote' => null,
+        ], $prevItems[5]->toArray());
 
-        $this->users->deleteItem(75);
+        $this->articles->deleteItem(75);
 
         // after delete
-        $nextItems = $this->users->getNextItems(80);
-        $this->assertEquals($this->users->getItem(74)->toArray(), $nextItems[4]->toArray());
+        $nextItems = $this->articles->getNextItems(80);
+        $this->assertEquals([
+            'id' => 74,
+            'content' => 'dummy73',
+            'user' => 'dummy73!!',
+            'vote' => null,
+        ], $nextItems[4]->toArray());
 
-        $prevItems = $this->users->getPrevItems(70);
-        $this->assertEquals($this->users->getItem(76)->toArray(), $prevItems[5]->toArray());
+        $prevItems = $this->articles->getPrevItems(70);
+        $this->assertEquals([
+            'id' => 76,
+            'content' => 'dummy75',
+            'user' => 'dummy75!!',
+            'vote' => null,
+        ], $prevItems[5]->toArray());
     }
 
     public function testCacheAfterUpdate()
     {
         // before delete
-        $nextItems = $this->users->getNextItems(80);
-        $this->assertEquals($this->users->getItem(75)->toArray(), $nextItems[4]->toArray());
+        $nextItems = $this->articles->getNextItems(80);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'dummy74',
+            'user' => 'dummy74!!',
+            'vote' => null,
+        ], $nextItems[4]->toArray());
 
-        $prevItems = $this->users->getPrevItems(70);
-        $this->assertEquals($this->users->getItem(75)->toArray(), $prevItems[5]->toArray());
+        $prevItems = $this->articles->getPrevItems(70);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'dummy74',
+            'user' => 'dummy74!!',
+            'vote' => null,
+        ], $prevItems[5]->toArray());
 
-        $this->users->updateItem(75, [
-            'username' => 'updated!!'
+        $this->articles->updateItem(75, [
+            'content' => 'updated!!'
         ]);
 
         // after delete
-        $nextItems = $this->users->getNextItems(80);
+        $nextItems = $this->articles->getNextItems(80);
         $this->assertEquals([
             'id' => 75,
-            'username' => 'updated!!',
-            'password' => 'dummy74!!'
+            'content' => 'updated!!',
+            'user' => 'dummy74!!',
+            'vote' => null
         ], $nextItems[4]->toArray());
 
-        $prevItems = $this->users->getPrevItems(70);
+        $prevItems = $this->articles->getPrevItems(70);
         $this->assertEquals([
             'id' => 75,
-            'username' => 'updated!!',
-            'password' => 'dummy74!!'
+            'content' => 'updated!!',
+            'user' => 'dummy74!!',
+            'vote' => null
         ], $prevItems[5]->toArray());
     }
 }
