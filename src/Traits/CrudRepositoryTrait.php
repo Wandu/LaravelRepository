@@ -63,10 +63,7 @@ trait CrudRepositoryTrait
      */
     public function createItem(array $dataSet)
     {
-        if (isset($this->model)) {
-            return forward_static_call(([$this->model, 'create']), $dataSet);
-        }
-        throw new NotDefinedModelException;
+        return forward_static_call(([$this->getAttributeModel(), 'create']), $dataSet);
     }
 
     /**
@@ -92,10 +89,8 @@ trait CrudRepositoryTrait
      */
     protected function createModel()
     {
-        if (isset($this->model)) {
-            return new $this->model;
-        }
-        throw new NotDefinedModelException;
+        $model = $this->getAttributeModel();
+        return new $model;
     }
 
     /**
@@ -105,33 +100,29 @@ trait CrudRepositoryTrait
      */
     protected function applyOrderBy(Builder $query, $reversed = false)
     {
-        foreach ($this->getOrderBy() as $key => $asc) {
+        foreach ($this->getAttributeOrderBy() as $key => $asc) {
             $query = $query->orderBy($key, $asc ^ $reversed ? 'ASC' : 'DESC');
         }
         return $query;
     }
 
     /**
-     * @param Builder $query
-     * @param Model $base
-     * @param bool $reversed
-     * @return Builder
+     * @return string
      */
-    protected function applyWhere(Builder $query, Model $base, $reversed = false)
+    protected function getAttributeModel()
     {
-        // @todo
-        foreach ($this->getOrderBy() as $key => $asc) {
-            $query = $query->where($key, $asc ^ $reversed ? '>' : '<', $base[$key]);
+        if (isset($this->model) && class_exists($this->model)) {
+            return $this->model;
         }
-        return $query;
+        throw new NotDefinedModelException;
     }
 
     /**
      * @return array
      */
-    protected function getOrderBy()
+    protected function getAttributeOrderBy()
     {
-        if (isset($this->orderBy)) {
+        if (isset($this->orderBy) && is_array($this->orderBy)) {
             return $this->orderBy;
         }
         throw new NotDefinedOrderByException;
