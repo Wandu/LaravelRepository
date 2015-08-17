@@ -5,7 +5,6 @@ use Wandu\Laravel\Repository\PlainRepositoryTest;
 use Wandu\Laravel\Repository\Stubs\Article;
 use Wandu\Laravel\Repository\Stubs\ArticleRepository;
 use Wandu\Laravel\Repository\Stubs\User;
-use Wandu\Laravel\Repository\Stubs\UserRepository;
 
 class ObjectCacheDecoratorTest extends PlainRepositoryTest
 {

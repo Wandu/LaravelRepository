@@ -3,8 +3,6 @@ namespace Wandu\Laravel\Repository;
 
 use Illuminate\Database\Eloquent\Collection;
 use PHPUnit_Framework_TestCase;
-use Wandu\Laravel\Repository\Stubs\Article;
-use Wandu\Laravel\Repository\Stubs\ArticleRepository;
 use Wandu\Laravel\Repository\Stubs\User;
 use Wandu\Laravel\Repository\Stubs\UserRepository;
 
