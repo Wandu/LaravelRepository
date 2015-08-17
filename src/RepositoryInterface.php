@@ -7,23 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 interface RepositoryInterface
 {
     /**
-     * @return Model
-     */
-    public function getFirstItem();
-
-    /**
-     * @param string $itemId
-     * @param int $length
+     * @param array $where
      * @return Collection
      */
-    public function getNextItems($itemId, $length = 10);
-
-    /**
-     * @param string $itemId
-     * @param int $length
-     * @return Collection
-     */
-    public function getPrevItems($itemId, $length = 10);
+    public function findItems(array $where);
 
     /**
      * @param string $id
