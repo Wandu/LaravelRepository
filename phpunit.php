@@ -29,5 +29,13 @@ $capsule->schema()->create('users', function (Blueprint $table) {
     $table->timestamps();
 });
 
+$capsule->schema()->create('articles', function (Blueprint $table) {
+    $table->bigIncrements('id');
+    $table->string('content', 100)->unique();
+    $table->string('user', 100);
+    $table->integer('vote')->nullable();
+    $table->timestamps();
+});
+
 $fileSystem = new Filesystem();
 $cache = new Repository(new FileStore($fileSystem, __DIR__ .'/cache'));
