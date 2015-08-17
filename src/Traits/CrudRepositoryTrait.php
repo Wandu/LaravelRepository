@@ -38,12 +38,17 @@ trait CrudRepositoryTrait
     public function updateItem($id, array $dataSet)
     {
         if ($item = $this->getItem($id)) {
-            $item->update($dataSet);
+            $this->createQuery()->where($item->getKeyName(), $id)->update($dataSet);
+            foreach ($dataSet as $key => $value) {
+                $item[$key] = $value;
+            }
         }
         return $item;
     }
 
     /**
+     * @todo to use data mapper (not active record)
+     * 
      * @param array $dataSet
      * @return Model
      */
