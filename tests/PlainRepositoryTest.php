@@ -32,6 +32,14 @@ class PlainRepositoryTest extends PHPUnit_Framework_TestCase
         }
     }
 
+    public function testGetAllItems()
+    {
+        $users = $this->articles->getAllItems();
+
+        $this->assertInstanceOf(Collection::class, $users);
+        $this->assertEquals(101, count($users));
+    }
+
     public function testCreateAndGet()
     {
         $user = $this->articles->createItem(['content' => 'newuser', 'user' => 'newuser!!!', 'vote' => null]);

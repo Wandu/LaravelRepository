@@ -32,6 +32,14 @@ class ObjectCacheDecorator implements RepositoryInterface
     /**
      * {@inheritdoc}
      */
+    public function getAllItems()
+    {
+        return $this->repository->getAllItems();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function findItems(array $where)
     {
         $this->repository->findItems($where);

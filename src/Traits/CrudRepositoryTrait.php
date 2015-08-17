@@ -23,6 +23,14 @@ trait CrudRepositoryTrait
     }
 
     /**
+     * @return Collection
+     */
+    public function getAllItems()
+    {
+        return $this->createQuery()->get();
+    }
+
+    /**
      * @param string $id
      * @return Model|null
      */

@@ -13,6 +13,11 @@ interface RepositoryInterface
     public function findItems(array $where);
 
     /**
+     * @return Collection
+     */
+    public function getAllItems();
+
+    /**
      * @param string $id
      * @return Model|null
      */
