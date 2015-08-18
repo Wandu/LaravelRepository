@@ -1,10 +1,9 @@
 <?php
 namespace Wandu\Laravel\Repository\Stubs;
 
-use Wandu\Laravel\Repository\PaginationRepositoryInterface;
 use Wandu\Laravel\Repository\Traits\PaginationRepositoryTrait;
 
-class UserRepository implements PaginationRepositoryInterface
+class UserRepository implements UserRepositoryInterface
 {
     use PaginationRepositoryTrait;
 
