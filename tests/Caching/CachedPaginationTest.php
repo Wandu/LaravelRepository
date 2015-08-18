@@ -2,16 +2,15 @@
 namespace Wandu\Laravel\Repository\Caching;
 
 use Wandu\Laravel\Repository\PaginationRepositoryTest;
-use Wandu\Laravel\Repository\Stubs\Article;
-use Wandu\Laravel\Repository\Stubs\ArticleRepository;
 use Wandu\Laravel\Repository\Stubs\User;
 use Wandu\Laravel\Repository\Stubs\UserCachedRepository;
 use Wandu\Laravel\Repository\Stubs\UserRepository;
+use Wandu\Laravel\Repository\Stubs\UserRepositoryInterface;
 
 class CachedPaginationTest extends PaginationRepositoryTest
 {
-    /** @var ObjectCacheDecorator */
-    protected $articles;
+    /** @var UserRepositoryInterface */
+    protected $users;
 
     /** @var User */
     protected $user;

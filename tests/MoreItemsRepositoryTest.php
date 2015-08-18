@@ -5,16 +5,14 @@ use Illuminate\Database\Eloquent\Collection;
 use PHPUnit_Framework_TestCase;
 use Wandu\Laravel\Repository\Stubs\Article;
 use Wandu\Laravel\Repository\Stubs\ArticleRepository;
-use Wandu\Laravel\Repository\Stubs\User;
-use Wandu\Laravel\Repository\Stubs\UserRepository;
 
 class MoreItemsRepositoryTest extends PHPUnit_Framework_TestCase
 {
-    /** @var UserRepository */
+    /** @var ArticleRepository */
     protected $articles;
 
-    /** @var User */
-    protected $user;
+    /** @var Article */
+    protected $article;
 
     public function setUp()
     {
@@ -26,10 +24,18 @@ class MoreItemsRepositoryTest extends PHPUnit_Framework_TestCase
             $this->articles->createItem(['content' => "dummy{$i}", 'user' => "dummy{$i}!!"]);
         }
         // specific user
-        $this->user = $this->articles->createItem(['content' => 'wan2land', 'user' => 'wan2land!']);
+        $this->article = $this->articles->createItem(['content' => 'wan2land', 'user' => 'wan2land!']);
         for ($i = 51; $i <= 100; $i++) {
             $this->articles->createItem(['content' => "dummy{$i}", 'user' => "dummy{$i}!!"]);
         }
+    }
+
+    public function testFindItems()
+    {
+        $items = $this->articles->findItems(['content' => 'wan2land']);
+
+        $this->assertInstanceOf(Collection::class, $items);
+        $this->assertEquals(1, count($items));
     }
 
     public function testGetAllItems()
@@ -40,7 +46,7 @@ class MoreItemsRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(101, count($users));
     }
 
-    public function testCreateAndGet()
+    public function testCreateItem()
     {
         $user = $this->articles->createItem(['content' => 'newuser', 'user' => 'newuser!!!', 'vote' => null]);
 
@@ -52,23 +58,23 @@ class MoreItemsRepositoryTest extends PHPUnit_Framework_TestCase
         ], $this->articles->getItem($user['id'])->toArray());
     }
 
-    public function testUpdate()
+    public function testUpdateItem()
     {
-        $this->articles->updateItem($this->user['id'], [
+        $this->articles->updateItem($this->article['id'], [
             'content' => 'changed'
         ]);
         $this->assertEquals([
-            'id' => $this->user['id'],
+            'id' => $this->article['id'],
             'content' => 'changed',
             'user' => 'wan2land!',
             'vote' => null
-        ], $this->articles->getItem($this->user['id'])->toArray());
+        ], $this->articles->getItem($this->article['id'])->toArray());
     }
 
-    public function testDelete()
+    public function testDeleteItem()
     {
-        $this->articles->deleteItem($this->user['id']);
-        $this->assertNull($this->articles->getItem($this->user['id']));
+        $this->articles->deleteItem($this->article['id']);
+        $this->assertNull($this->articles->getItem($this->article['id']));
     }
 
     public function testGetFirstItem()
@@ -85,7 +91,7 @@ class MoreItemsRepositoryTest extends PHPUnit_Framework_TestCase
 
     public function testGetNextItems()
     {
-        $users = $this->articles->getNextItems($this->user['id']);
+        $users = $this->articles->getNextItems($this->article['id']);
 
         $this->assertInstanceOf(Collection::class, $users);
         $this->assertEquals(10, count($users));
@@ -106,7 +112,7 @@ class MoreItemsRepositoryTest extends PHPUnit_Framework_TestCase
 
     public function testGetPrevItems()
     {
-        $users = $this->articles->getPrevItems($this->user['id']);
+        $users = $this->articles->getPrevItems($this->article['id']);
 
         $this->assertInstanceOf(Collection::class, $users);
         $this->assertEquals(10, count($users));
@@ -121,5 +127,85 @@ class MoreItemsRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('dummy53', $users->shift()['content']);
         $this->assertEquals('dummy52', $users->shift()['content']);
         $this->assertEquals('dummy51', $users->shift()['content']);
+    }
+
+    public function testCacheAfterDelete()
+    {
+        // before delete
+        $nextItems = $this->articles->getNextItems(80);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'dummy74',
+            'user' => 'dummy74!!',
+            'vote' => null,
+        ], $nextItems[4]->toArray());
+
+        $prevItems = $this->articles->getPrevItems(70);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'dummy74',
+            'user' => 'dummy74!!',
+            'vote' => null,
+        ], $prevItems[5]->toArray());
+
+        $this->articles->deleteItem(75);
+
+        // after delete
+        $nextItems = $this->articles->getNextItems(80);
+        $this->assertEquals([
+            'id' => 74,
+            'content' => 'dummy73',
+            'user' => 'dummy73!!',
+            'vote' => null,
+        ], $nextItems[4]->toArray());
+
+        $prevItems = $this->articles->getPrevItems(70);
+        $this->assertEquals([
+            'id' => 76,
+            'content' => 'dummy75',
+            'user' => 'dummy75!!',
+            'vote' => null,
+        ], $prevItems[5]->toArray());
+    }
+
+    public function testCacheAfterUpdate()
+    {
+        // before delete
+        $nextItems = $this->articles->getNextItems(80);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'dummy74',
+            'user' => 'dummy74!!',
+            'vote' => null,
+        ], $nextItems[4]->toArray());
+
+        $prevItems = $this->articles->getPrevItems(70);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'dummy74',
+            'user' => 'dummy74!!',
+            'vote' => null,
+        ], $prevItems[5]->toArray());
+
+        $this->articles->updateItem(75, [
+            'content' => 'updated!!'
+        ]);
+
+        // after delete
+        $nextItems = $this->articles->getNextItems(80);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'updated!!',
+            'user' => 'dummy74!!',
+            'vote' => null
+        ], $nextItems[4]->toArray());
+
+        $prevItems = $this->articles->getPrevItems(70);
+        $this->assertEquals([
+            'id' => 75,
+            'content' => 'updated!!',
+            'user' => 'dummy74!!',
+            'vote' => null
+        ], $prevItems[5]->toArray());
     }
 }
