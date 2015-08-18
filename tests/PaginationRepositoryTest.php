@@ -30,7 +30,23 @@ class PaginationRepositoryTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    public function testCreateAndGet()
+    public function testFindItems()
+    {
+        $items = $this->users->findItems(['username' => 'wan2land']);
+
+        $this->assertInstanceOf(Collection::class, $items);
+        $this->assertEquals(1, count($items));
+    }
+
+    public function testGetAllItems()
+    {
+        $items = $this->users->getAllItems();
+
+        $this->assertInstanceOf(Collection::class, $items);
+        $this->assertEquals(101, count($items));
+    }
+
+    public function testCreateItem()
     {
         $user = $this->users->createItem(['username' => 'newuser', 'password' => 'newuser!!!']);
 
@@ -39,27 +55,33 @@ class PaginationRepositoryTest extends PHPUnit_Framework_TestCase
             'username' => 'newuser',
             'password' => 'newuser!!!',
         ], $this->users->getItem($user['id'])->toArray());
+
+        $this->assertEquals(102, count($this->users->getAllItems()));
     }
 
-    public function testUpdate()
+    public function testUpdateItem()
     {
         $this->users->updateItem($this->user['id'], [
-            'username' => 'changed'
+            'password' => 'changed'
         ]);
         $this->assertEquals([
             'id' => $this->user['id'],
-            'username' => 'changed',
-            'password' => 'wan2land!',
+            'username' => 'wan2land',
+            'password' => 'changed',
         ], $this->users->getItem($this->user['id'])->toArray());
+
+        $this->assertEquals(101, count($this->users->getAllItems()));
     }
 
-    public function testDelete()
+    public function testDeleteItem()
     {
         $this->users->deleteItem($this->user['id']);
         $this->assertNull($this->users->getItem($this->user['id']));
+
+        $this->assertEquals(100, count($this->users->getAllItems()));
     }
 
-    public function testGetPrevItems()
+    public function testGetItems()
     {
         $users = $this->users->getItems(0, 10);
 
@@ -87,5 +109,61 @@ class PaginationRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('dummy95', $users->shift()['username']);
         $this->assertEquals('dummy94', $users->shift()['username']);
         $this->assertEquals('dummy93', $users->shift()['username']);
+    }
+
+    public function testDeleteAndGetItems()
+    {
+        // for caching~
+        foreach (range(0, 20) as $i) {
+            $this->users->getItems($i, 10);
+        }
+        foreach (range(0, 20) as $i) {
+            $this->users->getItems($i, 5);
+        }
+
+        // remove Item!
+        $this->users->deleteItem(95);
+
+        foreach (range(0, 10) as $i) {
+            $users = $this->users->getItems($i, 10);
+
+            $this->assertInstanceOf(Collection::class, $users);
+            $this->assertEquals(10, count($users));
+
+            $start = 100 - $i;
+            foreach (range(0, 10) as $j) {
+                if ($i + $j === 6 || $i > 6) { // i 가 6을 넘으면 6이 같음을 체크할수가 없음.
+                    continue;
+                }
+                $this->assertEquals('dummy' . ($start - $j), $users->shift()['username']);
+            }
+        }
+    }
+
+    public function testUpdateAndGetItems()
+    {
+        // for caching~
+        foreach (range(0, 20) as $i) {
+            $this->users->getItems($i, 10);
+        }
+        foreach (range(0, 20) as $i) {
+            $this->users->getItems($i, 5);
+        }
+
+        // remove Item!
+        $this->users->updateItem(95, [
+            'password' => 'changed!'
+        ]);
+
+        foreach (range(0, 10) as $i) {
+            $users = $this->users->getItems($i, 10);
+
+            $this->assertInstanceOf(Collection::class, $users);
+            $this->assertEquals(10, count($users));
+
+            if ($i <= 6) {
+                $this->assertEquals('changed!', $users[6-$i]['password']);
+            }
+        }
     }
 }
