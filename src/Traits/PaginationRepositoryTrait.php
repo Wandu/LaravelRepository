@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 trait PaginationRepositoryTrait
 {
-    use CrudRepositoryTrait;
+    use RepositoryTrait;
 
     /**
      * @param int $skip

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Wandu\Laravel\Repository\NotDefinedModelException;
 use Wandu\Laravel\Repository\NotDefinedOrderByException;
 
-trait CrudRepositoryTrait
+trait RepositoryTrait
 {
     /**
      * @param array $where

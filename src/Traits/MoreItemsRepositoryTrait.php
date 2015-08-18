@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 trait MoreItemsRepositoryTrait
 {
-    use CrudRepositoryTrait;
+    use RepositoryTrait;
 
     /**
      * @return Model
