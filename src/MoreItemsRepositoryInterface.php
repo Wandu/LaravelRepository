@@ -4,7 +4,7 @@ namespace Wandu\Laravel\Repository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
-interface MoreItemRepositoryInterface extends RepositoryInterface
+interface MoreItemsRepositoryInterface extends RepositoryInterface
 {
     /**
      * @return Model
