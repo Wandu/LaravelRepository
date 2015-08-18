@@ -8,7 +8,7 @@ use Wandu\Laravel\Repository\Stubs\ArticleRepository;
 use Wandu\Laravel\Repository\Stubs\User;
 use Wandu\Laravel\Repository\Stubs\UserRepository;
 
-class PlainRepositoryTest extends PHPUnit_Framework_TestCase
+class MoreItemsRepositoryTest extends PHPUnit_Framework_TestCase
 {
     /** @var UserRepository */
     protected $articles;
