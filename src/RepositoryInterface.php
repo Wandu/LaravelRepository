@@ -24,6 +24,12 @@ interface RepositoryInterface
     public function getItem($id);
 
     /**
+     * @param array $arrayOfId
+     * @return Collection
+     */
+    public function getItemsById(array $arrayOfId);
+
+    /**
      * @param string $id
      * @param array $dataSet
      * @return Model

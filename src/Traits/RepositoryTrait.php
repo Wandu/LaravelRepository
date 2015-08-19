@@ -40,6 +40,15 @@ trait RepositoryTrait
     }
 
     /**
+     * @param array $arrayOfId
+     * @return Collection
+     */
+    public function getItemsById(array $arrayOfId)
+    {
+        return $this->createQuery()->whereIn($this->createModel()->getKeyName(), $arrayOfId)->get();
+    }
+
+    /**
      * @param string $id
      * @param array $dataSet
      * @return Model

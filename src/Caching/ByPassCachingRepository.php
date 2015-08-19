@@ -43,6 +43,14 @@ class ByPassCachingRepository implements RepositoryInterface
     /**
      * {@inheritdoc}
      */
+    public function getItemsById(array $arrayOfId)
+    {
+        return $this->repository->getItemsById($arrayOfId);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function updateItem($id, array $dataSet)
     {
         return $this->repository->updateItem($id, $dataSet);
