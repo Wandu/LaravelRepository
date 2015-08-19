@@ -46,6 +46,19 @@ class MoreItemsRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(101, count($users));
     }
 
+    public function testGetItemsById()
+    {
+        $items = $this->articles->getItemsById([3,5,50]);
+
+        $this->assertInstanceOf(Collection::class, $items);
+        $this->assertEquals(3, count($items));
+
+        $this->assertEquals('dummy3', $items->shift()['content']);
+        $this->assertEquals('dummy5', $items->shift()['content']);
+        $this->assertEquals('dummy50', $items->shift()['content']);
+    }
+
+
     public function testCreateItem()
     {
         $user = $this->articles->createItem(['content' => 'newuser', 'user' => 'newuser!!!', 'vote' => null]);

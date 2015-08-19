@@ -46,6 +46,18 @@ class PaginationRepositoryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(101, count($items));
     }
 
+    public function testGetItemsById()
+    {
+        $items = $this->users->getItemsById([3,5,50]);
+
+        $this->assertInstanceOf(Collection::class, $items);
+        $this->assertEquals(3, count($items));
+
+        $this->assertEquals('dummy3', $items->shift()['username']);
+        $this->assertEquals('dummy5', $items->shift()['username']);
+        $this->assertEquals('dummy50', $items->shift()['username']);
+    }
+
     public function testCreateItem()
     {
         $user = $this->users->createItem(['username' => 'newuser', 'password' => 'newuser!!!']);
