@@ -1,5 +1,5 @@
 <?php
-namespace Wandu\Laravel\Repository\Stubs;
+namespace Wandu\Laravel\Repository\Stubs\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,10 +14,18 @@ class Article extends Model
     /** @var array */
     protected $fillable = [
         'content',
-        'user',
+        'username',
         'vote',
     ];
 
     /** @var array */
     protected $hidden = ['created_at', 'updated_at'];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'username', 'username');
+    }
 }
