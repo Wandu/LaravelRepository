@@ -1,19 +1,15 @@
 <?php
 namespace Wandu\Laravel\Repository\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
-
 trait PaginationRepositoryTrait
 {
-    use RepositoryTrait;
-
     /**
      * @param int $skip
      * @param int $take
-     * @return Collection
+     * @return \Wandu\Laravel\Repository\DataMapper\Collection
      */
     public function getItems($skip = 0, $take = 10)
     {
-        return $this->applyOrderBy($this->createQuery())->skip($skip)->take($take)->get();
+        return $this->toMappers($this->createQuery()->skip($skip)->take($take)->get());
     }
 }
