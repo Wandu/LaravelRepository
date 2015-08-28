@@ -20,6 +20,13 @@ class ArticleHit extends Model
     /** @var array */
     protected $hidden = ['created_at', 'updated_at'];
 
+    /** @var array */
+    protected $casts = [
+        'id' => 'integer',
+        'article_id' => 'integer',
+        'user_id' => 'integer',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

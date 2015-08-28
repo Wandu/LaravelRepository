@@ -18,7 +18,12 @@ class User extends Model
     ];
 
     /** @var array */
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['password', 'updated_at'];
+
+    /** @var array */
+    protected $casts = [
+        'id' => 'integer'
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -26,5 +31,13 @@ class User extends Model
     public function articles()
     {
         return $this->hasMany(Article::class, 'username', 'username');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function hits()
+    {
+        return $this->hasMany(ArticleHit::class, 'article_id', 'id');
     }
 }

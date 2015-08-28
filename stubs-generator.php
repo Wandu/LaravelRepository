@@ -77,7 +77,7 @@ for ($i = 0; $i < 200; $i++) {
 
 for ($i = 0; $i < 200; $i++) {
     Category::create([
-        'article_id' => rand(1, 100),
+        'article_id' => rand(1, 200),
         'name' => ['Q&A', 'PHP', 'FreeBoard', 'Javascript', 'Go'][rand(0, 4)]
     ]);
 }

@@ -19,7 +19,13 @@ class Article extends Model
     ];
 
     /** @var array */
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = [];
+
+    /** @var array */
+    protected $casts = [
+        'id' => 'integer',
+        'vote' => 'integer',
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -27,5 +33,21 @@ class Article extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'username', 'username');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function categories()
+    {
+        return $this->hasMany(Category::class, 'article_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function hits()
+    {
+        return $this->hasMany(ArticleHit::class, 'article_id', 'id');
     }
 }
