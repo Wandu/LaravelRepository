@@ -1,6 +1,8 @@
 <?php
 namespace Wandu\Laravel\Repository\Traits;
 
+use Illuminate\Database\Eloquent\Builder;
+
 trait PaginationRepositoryTrait
 {
     /**

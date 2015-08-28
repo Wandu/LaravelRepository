@@ -2,6 +2,7 @@
 namespace Wandu\Laravel\Repository;
 
 use Wandu\Laravel\Repository\DataMapper\Collection;
+use Wandu\Laravel\Repository\DataMapper\DataMapper;
 use Wandu\Laravel\Repository\Stubs\DataMapper\User;
 use Wandu\Laravel\Repository\Stubs\Repository\UserRepository;
 
@@ -22,6 +23,7 @@ class PaginationRepositoryTest extends RepositoryTestcase
         $this->assertInstanceOf(Collection::class, $users1);
         $this->assertSame(10, $users1->count());
 
+        $this->assertInstanceOf(DataMapper::class, $users1[0]);
         $this->assertInstanceOf(User::class, $users1[0]);
 
         $this->assertSame(100, $users1[0]['id']);

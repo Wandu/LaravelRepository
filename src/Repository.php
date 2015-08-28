@@ -1,6 +1,7 @@
 <?php
 namespace Wandu\Laravel\Repository;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 use Wandu\Laravel\Repository\DataMapper\Collection;
@@ -10,6 +11,11 @@ abstract class Repository implements RepositoryInterface, Mappable
 {
     /** @var string */
     protected $model;
+
+    /** @var array */
+    protected $orders = [
+        'id' => false,
+    ];
 
     /**
      * {@inheritdoc}
@@ -88,6 +94,19 @@ abstract class Repository implements RepositoryInterface, Mappable
     public function deleteItem($id)
     {
         $this->createQuery()->where($this->createModel()->getKeyName(), $id)->delete();
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool $reversed
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function applyScopeOrders(Builder $query, $reversed = false)
+    {
+        foreach ($this->orders as $key => $asc) {
+            $query = $query->orderBy($key, $asc ^ $reversed ? 'ASC' : 'DESC');
+        }
+        return $query;
     }
 
     /**

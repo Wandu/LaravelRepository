@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 trait MoreItemsRepositoryTrait
 {
-    use RepositoryTrait;
-
     /**
-     * @return Model
+     * @return \Wandu\Laravel\Repository\DataMapper\Datamapper
      */
     public function getFirstItem()
     {
-        return $this->applyOrderBy($this->createQuery())->first();
+        $item = $this->applyScopeFirstItem($this->createQuery())->first();
+        return isset($item) ? $this->toMapper($item) : null;
     }
 
     /**
@@ -24,10 +23,10 @@ trait MoreItemsRepositoryTrait
      */
     public function getNextItems($itemId, $length = 10)
     {
-        return $this->applyWhere(
-            $this->applyOrderBy($this->createQuery()),
-            $this->getItem($itemId)
-        )->take($length)->get();
+        return $this->toMappers($this->applyScopeNextItems(
+            $this->createQuery(),
+            $this->createQuery()->find($itemId)
+        )->take($length)->get());
     }
 
     /**
@@ -37,25 +36,40 @@ trait MoreItemsRepositoryTrait
      */
     public function getPrevItems($itemId, $length = 10)
     {
-        return $this->applyWhere(
-            $this->applyOrderBy($this->createQuery(), true),
-            $this->getItem($itemId),
-            true
-        )->take($length)->get()->reverse();
+        return $this->toMappers($this->applyScopePrevItems(
+            $this->createQuery(),
+            $this->createQuery()->find($itemId)
+        )->take($length)->get()->reverse());
     }
 
     /**
-     * @param Builder $query
-     * @param Model $base
-     * @param bool $reversed
-     * @return Builder
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function applyWhere(Builder $query, Model $base, $reversed = false)
+    protected function applyScopeFirstItem(Builder $query)
     {
-        // @todo
-        foreach ($this->getAttributeOrderBy() as $key => $asc) {
-            $query = $query->where($key, $asc ^ $reversed ? '>' : '<', $base[$key]);
-        }
-        return $query;
+        return $this->applyScopeOrders($query);
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model $criteria
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function applyScopeNextItems(Builder $query, Model $criteria)
+    {
+        return $this->applyScopeOrders($query)
+            ->where($criteria->getKeyName(), '<', $criteria->getKey());
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param \Illuminate\Database\Eloquent\Model $criteria
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function applyScopePrevItems(Builder $query, Model $criteria)
+    {
+        return $this->applyScopeOrders($query, true)
+            ->where($criteria->getKeyName(), '>', $criteria->getKey());
     }
 }
