@@ -1,8 +1,6 @@
 <?php
 namespace Wandu\Laravel\Repository\Traits;
 
-use Illuminate\Database\Eloquent\Builder;
-
 trait PaginationRepositoryTrait
 {
     /**
@@ -12,6 +10,8 @@ trait PaginationRepositoryTrait
      */
     public function getItems($skip = 0, $take = 10)
     {
-        return $this->toMappers($this->createQuery()->skip($skip)->take($take)->get());
+        return $this->toMappers(
+            $this->applyScopeOrders($this->createQuery())->skip($skip)->take($take)->get()
+        );
     }
 }

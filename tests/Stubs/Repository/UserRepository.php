@@ -23,12 +23,4 @@ class UserRepository extends Repository implements PaginationRepositoryInterface
     {
         return new UserMapper($class);
     }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function createQuery()
-    {
-        return parent::createQuery()->orderBy('id', 'DESC');
-    }
 }
