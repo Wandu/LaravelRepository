@@ -4,6 +4,7 @@ namespace Wandu\Laravel\Repository;
 use Wandu\Laravel\Repository\DataMapper\Collection;
 use Wandu\Laravel\Repository\DataMapper\DataMapper;
 use Wandu\Laravel\Repository\Stubs\DataMapper\Article;
+use Wandu\Laravel\Repository\Stubs\Repository\ArticleHitRepository;
 use Wandu\Laravel\Repository\Stubs\Repository\ArticleRepository;
 
 class MoreItemsRepositoryTest extends RepositoryTestCase
@@ -14,7 +15,7 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->articles = new ArticleRepository();
+        $this->articles = new ArticleRepository(new ArticleHitRepository());
     }
 
     public function testGetFirstItem()
@@ -23,7 +24,7 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
 
         $this->assertInstanceOf(DataMapper::class, $item);
         $this->assertInstanceOf(Article::class, $item);
-        $this->assertEquals([
+        $this->assertSame([
             'id' => 200,
             'username' => 'blanda.norval',
             'content' => 'Sequi non quis beatae autem aliquid nobis. ' .
@@ -32,7 +33,8 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
                 'Vel tempora sed vel officia harum explicabo tempore.',
             'vote' => 0,
             'created_at' => '2015-08-27 20:42:30',
-            'updated_at' => '2015-08-27 20:42:30'
+            'updated_at' => '2015-08-27 20:42:30',
+            'count' => 3
         ], $item->toArray());
     }
 
@@ -45,6 +47,16 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
 
         $this->assertInstanceOf(DataMapper::class, $items[0]);
         $this->assertInstanceOf(Article::class, $items[0]);
+
+        $this->assertSame([
+            'id' => 189,
+            'username' => 'davis.waino',
+            'content' => $items[0]['content'],
+            'vote' => 0,
+            'created_at' => '2015-08-27 20:42:29',
+            'updated_at' => '2015-08-27 20:42:29',
+            'count' => 4,
+        ], $items[0]->toArray());
 
         $this->assertEquals(189, $items[0]['id']);
         $this->assertEquals(188, $items[1]['id']);
