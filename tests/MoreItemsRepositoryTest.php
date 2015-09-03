@@ -34,7 +34,7 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
             'vote' => 0,
             'created_at' => '2015-08-27 20:42:30',
             'updated_at' => '2015-08-27 20:42:30',
-            'count' => 3
+            'hits' => 3
         ], $item->toArray());
     }
 
@@ -55,7 +55,7 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
             'vote' => 0,
             'created_at' => '2015-08-27 20:42:29',
             'updated_at' => '2015-08-27 20:42:29',
-            'count' => 4,
+            'hits' => 4,
         ], $items[0]->toArray());
 
         $this->assertEquals(189, $items[0]['id']);

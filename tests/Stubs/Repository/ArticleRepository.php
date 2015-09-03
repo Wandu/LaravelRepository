@@ -35,9 +35,9 @@ class ArticleRepository extends Repository implements MoreItemsRepositoryInterfa
     public function toMapper(Model $class)
     {
         $item = new ArticleMapper($class);
-        if (!isset($item['count'])) {
+        if (!isset($item['hits'])) {
             $countOfArticles = $this->hits->getAggregationOfCountByArticle([$item['id']]);
-            $item['count'] = (int)(isset($countOfArticles[$item['id']]) ? $countOfArticles[$item['id']] : 0);
+            $item['hits'] = (int)(isset($countOfArticles[$item['id']]) ? $countOfArticles[$item['id']] : 0);
         }
         return $item;
     }
@@ -47,15 +47,11 @@ class ArticleRepository extends Repository implements MoreItemsRepositoryInterfa
      */
     public function toMappers(EloquentCollection $collection)
     {
-        $ids = $collection->map(function (Model $item) {
-            return $item['id'];
-        })->toArray();
+        $ids = $collection->pluck('id')->toArray();
         $countOfArticles = $this->hits->getAggregationOfCountByArticle($ids);
         return parent::toMappers($collection)->map(function (DataMapper $item) use ($countOfArticles) {
-            $item['count'] = (int)(isset($countOfArticles[$item['id']]) ? $countOfArticles[$item['id']] : 0);
+            $item['hits'] = (int)(isset($countOfArticles[$item['id']]) ? $countOfArticles[$item['id']] : 0);
             return $item;
         });
     }
-
-
 }

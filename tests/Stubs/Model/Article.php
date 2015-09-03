@@ -19,9 +19,6 @@ class Article extends Model
     ];
 
     /** @var array */
-    protected $hidden = [];
-
-    /** @var array */
     protected $casts = [
         'id' => 'integer',
         'vote' => 'integer',
