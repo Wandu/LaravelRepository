@@ -9,6 +9,9 @@ use Wandu\Laravel\Repository\DataMapper\Mappable;
 
 abstract class Repository implements RepositoryInterface, Mappable
 {
+    /** @var \Wandu\Laravel\Repository\Repository */
+    protected $parent;
+
     /** @var string */
     protected $model;
 
@@ -32,6 +35,16 @@ abstract class Repository implements RepositoryInterface, Mappable
             $collectionToReturn[] = $this->toMapper($model);
         });
         return new Collection($collectionToReturn);
+    }
+
+    /**
+     * @param \Wandu\Laravel\Repository\Repository $parent
+     * @return self
+     */
+    public function setParent(Repository $parent)
+    {
+        $this->parent = $parent;
+        return $this;
     }
 
     /**

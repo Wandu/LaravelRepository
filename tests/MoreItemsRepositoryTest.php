@@ -6,6 +6,7 @@ use Wandu\Laravel\Repository\DataMapper\DataMapper;
 use Wandu\Laravel\Repository\Stubs\DataMapper\Article;
 use Wandu\Laravel\Repository\Stubs\Repository\ArticleHitRepository;
 use Wandu\Laravel\Repository\Stubs\Repository\ArticleRepository;
+use Wandu\Laravel\Repository\Stubs\Repository\CategoryRepository;
 
 class MoreItemsRepositoryTest extends RepositoryTestCase
 {
@@ -15,7 +16,7 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->articles = new ArticleRepository(new ArticleHitRepository());
+        $this->articles = new ArticleRepository(new ArticleHitRepository(), new CategoryRepository());
     }
 
     public function testGetFirstItem()
@@ -34,7 +35,10 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
             'vote' => 0,
             'created_at' => '2015-08-27 20:42:30',
             'updated_at' => '2015-08-27 20:42:30',
-            'hits' => 3
+            'hits' => 3,
+            'categories' => [
+                'Q&A',
+            ],
         ], $item->toArray());
     }
 
@@ -56,6 +60,7 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
             'created_at' => '2015-08-27 20:42:29',
             'updated_at' => '2015-08-27 20:42:29',
             'hits' => 4,
+            'categories' => [],
         ], $items[0]->toArray());
 
         $this->assertEquals(189, $items[0]['id']);

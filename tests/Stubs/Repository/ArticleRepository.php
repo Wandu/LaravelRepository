@@ -20,12 +20,17 @@ class ArticleRepository extends Repository implements MoreItemsRepositoryInterfa
     /** @var \Wandu\Laravel\Repository\Stubs\Repository\ArticleHitRepository */
     protected $hits;
 
+    /** @var \Wandu\Laravel\Repository\Stubs\Repository\CategoryRepository */
+    protected $categories;
+
     /**
      * @param \Wandu\Laravel\Repository\Stubs\Repository\ArticleHitRepository $hits
+     * @param \Wandu\Laravel\Repository\Stubs\Repository\CategoryRepository $categories
      */
-    public function __construct(ArticleHitRepository $hits)
+    public function __construct(ArticleHitRepository $hits, CategoryRepository $categories)
     {
         $this->hits = $hits;
+        $this->categories = $categories;
     }
 
     /**
@@ -39,6 +44,12 @@ class ArticleRepository extends Repository implements MoreItemsRepositoryInterfa
             $countOfArticles = $this->hits->getAggregationOfCountByArticle([$item['id']]);
             $item['hits'] = (int)(isset($countOfArticles[$item['id']]) ? $countOfArticles[$item['id']] : 0);
         }
+        if (!isset($item['categories'])) {
+            $categoriesOfArticle = $this->categories->getAttributesOfNameByArticle([$item['id']]);
+            $item['categories'] = isset($categoriesOfArticle[$item['id']]) ?
+                $categoriesOfArticle[$item['id']]->pluck('name')->toArray() :
+                [];
+        }
         return $item;
     }
 
@@ -48,10 +59,14 @@ class ArticleRepository extends Repository implements MoreItemsRepositoryInterfa
     public function toMappers(EloquentCollection $collection)
     {
         $ids = $collection->pluck('id')->toArray();
-        $countOfArticles = $this->hits->getAggregationOfCountByArticle($ids);
-        return parent::toMappers($collection)->map(function (DataMapper $item) use ($countOfArticles) {
-            $item['hits'] = (int)(isset($countOfArticles[$item['id']]) ? $countOfArticles[$item['id']] : 0);
+        $hitsOfArticle = $this->hits->getAggregationOfCountByArticle($ids);
+        $categoriesOfArticle = $this->categories->getAttributesOfNameByArticle($ids);
+        return parent::toMappers($collection->map(function (Model $item) use ($hitsOfArticle, $categoriesOfArticle) {
+            $item['hits'] = (int)(isset($hitsOfArticle[$item['id']]) ? $hitsOfArticle[$item['id']] : 0);
+            $item['categories'] = isset($categoriesOfArticle[$item['id']]) ?
+                $categoriesOfArticle[$item['id']]->pluck('name')->toArray() :
+                [];
             return $item;
-        });
+        }));
     }
 }
