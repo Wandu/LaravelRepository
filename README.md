@@ -11,3 +11,7 @@ Laravel Repository
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Wandu/LaravelRepository/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Wandu/LaravelRepository/?branch=master)
 
 For Laravel Repository Pattern.
+
+## Todo
+
+- Cached Repository
