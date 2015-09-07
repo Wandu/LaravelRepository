@@ -13,6 +13,18 @@ class DataMapperTest extends PHPUnit_Framework_TestCase
         Mockery::close();
     }
 
+    public function testFromArray()
+    {
+        $mapper = DataMapper::fromArray([
+            'hello' => 'world',
+            'blabla' => 'otherString~',
+        ]);
+        $this->assertSame([
+            'hello' => 'world',
+            'blabla' => 'otherString~',
+        ], $mapper->toArray());
+    }
+
     public function testToArray()
     {
         $model = Mockery::mock(Model::class);

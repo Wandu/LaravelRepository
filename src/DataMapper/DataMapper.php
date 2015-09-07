@@ -11,11 +11,25 @@ class DataMapper implements ArrayAccess
     protected static $uncached = [];
 
     /**
+     * @param array $dataSet
+     * @return static
+     */
+    public static function fromArray(array $dataSet)
+    {
+        $item = new static();
+        $item->dataSet = $dataSet;
+        return $item;
+    }
+
+    /** @var array */
+    protected $dataSet;
+
+    /**
      * @param \Illuminate\Database\Eloquent\Model $model
      */
-    public function __construct(EloquentModel $model)
+    public function __construct(EloquentModel $model = null)
     {
-        $this->dataSet = $model->toArray();
+        $this->dataSet = isset($model) ? $model->toArray() : [];
     }
 
     /**
