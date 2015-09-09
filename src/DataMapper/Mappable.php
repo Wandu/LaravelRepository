@@ -1,7 +1,7 @@
 <?php
 namespace Wandu\Laravel\Repository\DataMapper;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentColection;
 use Illuminate\Database\Eloquent\Model;
 
 interface Mappable
@@ -16,5 +16,5 @@ interface Mappable
      * @param \Illuminate\Database\Eloquent\Collection $collection
      * @return \Wandu\Laravel\Repository\DataMapper\Collection
      */
-    public function toMappers(Collection $collection);
+    public function toMappers(EloquentColection $collection);
 }
