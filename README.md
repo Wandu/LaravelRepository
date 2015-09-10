@@ -15,3 +15,4 @@ For Laravel Repository Pattern.
 ## Todo
 
 - Cached Repository
+
