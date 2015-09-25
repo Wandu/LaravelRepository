@@ -1,9 +1,9 @@
 <?php
 namespace Wandu\Laravel\Repository;
 
-use Wandu\Laravel\Repository\DataMapper\Collection;
-use Wandu\Laravel\Repository\DataMapper\DataMapper;
-use Wandu\Laravel\Repository\Stubs\DataMapper\Article;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Wandu\Laravel\Repository\Stubs\Model\Article;
 use Wandu\Laravel\Repository\Stubs\Repository\ArticleHitRepository;
 use Wandu\Laravel\Repository\Stubs\Repository\ArticleRepository;
 use Wandu\Laravel\Repository\Stubs\Repository\CategoryRepository;
@@ -23,7 +23,7 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
     {
         $item = $this->articles->getFirstItem();
 
-        $this->assertInstanceOf(DataMapper::class, $item);
+        $this->assertInstanceOf(Model::class, $item);
         $this->assertInstanceOf(Article::class, $item);
         $this->assertSame([
             'id' => 200,
@@ -35,10 +35,6 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
             'vote' => 0,
             'created_at' => '2015-08-27 20:42:30',
             'updated_at' => '2015-08-27 20:42:30',
-            'hits' => 3,
-            'categories' => [
-                'Q&A',
-            ],
         ], $item->toArray());
     }
 
@@ -49,7 +45,7 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
         $this->assertInstanceOf(Collection::class, $items);
         $this->assertEquals(7, count($items));
 
-        $this->assertInstanceOf(DataMapper::class, $items[0]);
+        $this->assertInstanceOf(Model::class, $items[0]);
         $this->assertInstanceOf(Article::class, $items[0]);
 
         $this->assertSame([
@@ -59,8 +55,6 @@ class MoreItemsRepositoryTest extends RepositoryTestCase
             'vote' => 0,
             'created_at' => '2015-08-27 20:42:29',
             'updated_at' => '2015-08-27 20:42:29',
-            'hits' => 4,
-            'categories' => [],
         ], $items[0]->toArray());
 
         $this->assertEquals(189, $items[0]['id']);

@@ -2,44 +2,42 @@
 namespace Wandu\Laravel\Repository\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 trait MoreItemsRepositoryTrait
 {
     /**
-     * @return \Wandu\Laravel\Repository\DataMapper\Datamapper
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function getFirstItem()
     {
-        $item = $this->applyScopeFirstItem($this->createQuery())->first();
-        return isset($item) ? $this->toMapper($item) : null;
+        return $this->applyScopeFirstItem($this->createQuery())->first();
     }
 
     /**
      * @param string $itemId
      * @param int $length
-     * @return Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getNextItems($itemId, $length = 10)
     {
-        return $this->toMappers($this->applyScopeNextItems(
+        return $this->applyScopeNextItems(
             $this->createQuery(),
             $this->createQuery()->find($itemId)
-        )->take($length)->get());
+        )->take($length)->get();
     }
 
     /**
      * @param string $itemId
      * @param int $length
-     * @return Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getPrevItems($itemId, $length = 10)
     {
-        return $this->toMappers($this->applyScopePrevItems(
+        return $this->applyScopePrevItems(
             $this->createQuery(),
             $this->createQuery()->find($itemId)
-        )->take($length)->get()->reverse());
+        )->take($length)->get()->reverse();
     }
 
     /**

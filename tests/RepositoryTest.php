@@ -1,9 +1,9 @@
 <?php
 namespace Wandu\Laravel\Repository;
 
-use Wandu\Laravel\Repository\DataMapper\Collection;
-use Wandu\Laravel\Repository\DataMapper\DataMapper;
-use Wandu\Laravel\Repository\Stubs\DataMapper\ArticleHit;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Wandu\Laravel\Repository\Stubs\Model\ArticleHit;
 use Wandu\Laravel\Repository\Stubs\Repository\ArticleHitRepository;
 
 class RepositoryTest extends RepositoryTestCase
@@ -35,14 +35,14 @@ class RepositoryTest extends RepositoryTestCase
             ]
         ], $items->toArray());
 
-        $this->assertInstanceOf(DataMapper::class, $items[0]);
+        $this->assertInstanceOf(Model::class, $items[0]);
         $this->assertInstanceOf(ArticleHit::class, $items[0]);
         $this->assertSame([
             'id' => 332,
             'article_id' => 30,
             'user_id' => 97,
         ], $items[0]->toArray());
-        $this->assertInstanceOf(DataMapper::class, $items[1]);
+        $this->assertInstanceOf(Model::class, $items[1]);
         $this->assertInstanceOf(ArticleHit::class, $items[1]);
         $this->assertSame([
             'id' => 357,
@@ -58,7 +58,7 @@ class RepositoryTest extends RepositoryTestCase
         $this->assertInstanceOf(Collection::class, $items);
         $this->assertEquals(400, count($items));
 
-        $this->assertInstanceOf(DataMapper::class, $items[331]);
+        $this->assertInstanceOf(Model::class, $items[331]);
         $this->assertInstanceOf(ArticleHit::class, $items[331]);
         $this->assertSame([
             'id' => 332,
@@ -70,7 +70,7 @@ class RepositoryTest extends RepositoryTestCase
     public function testGetItem()
     {
         $item = $this->hits->getItem(3);
-        $this->assertInstanceOf(DataMapper::class, $item);
+        $this->assertInstanceOf(Model::class, $item);
         $this->assertInstanceOf(ArticleHit::class, $item);
 
         $this->assertEquals([
@@ -118,7 +118,7 @@ class RepositoryTest extends RepositoryTestCase
             'user_id' => 50,
         ]);
 
-        $this->assertInstanceOf(DataMapper::class, $item);
+        $this->assertInstanceOf(Model::class, $item);
         $this->assertInstanceOf(ArticleHit::class, $item);
         $this->assertEquals([
             'id' => 401,
@@ -145,7 +145,7 @@ class RepositoryTest extends RepositoryTestCase
             'article_id' => 163,
             'user_id' => 80
         ]);
-        $this->assertInstanceOf(DataMapper::class, $item);
+        $this->assertInstanceOf(Model::class, $item);
         $this->assertInstanceOf(ArticleHit::class, $item);
         $this->assertEquals([
             'id' => 3,

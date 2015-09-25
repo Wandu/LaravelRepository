@@ -2,12 +2,8 @@
 namespace Wandu\Laravel\Repository;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Database\Eloquent\Model;
-use Wandu\Laravel\Repository\DataMapper\Collection;
-use Wandu\Laravel\Repository\DataMapper\Mappable;
 
-abstract class Repository implements RepositoryInterface, Mappable
+abstract class Repository implements RepositoryInterface
 {
     /** @var \Wandu\Laravel\Repository\Repository */
     protected $parent;
@@ -19,23 +15,6 @@ abstract class Repository implements RepositoryInterface, Mappable
     protected $orders = [
         'id' => false,
     ];
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function toMapper(Model $class);
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toMappers(EloquentCollection $collection)
-    {
-        $collectionToReturn = [];
-        $collection->each(function (Model $model) use (&$collectionToReturn) {
-            $collectionToReturn[] = $this->toMapper($model);
-        });
-        return new Collection($collectionToReturn);
-    }
 
     /**
      * @param \Wandu\Laravel\Repository\Repository $parent
@@ -56,7 +35,7 @@ abstract class Repository implements RepositoryInterface, Mappable
         foreach ($where as $key => $value) {
             $query = $query->where($key, $value);
         }
-        return $this->toMappers($query->get());
+        return $query->get();
     }
 
     /**
@@ -64,7 +43,7 @@ abstract class Repository implements RepositoryInterface, Mappable
      */
     public function getAllItems()
     {
-        return $this->toMappers($this->createQuery()->get());
+        return $this->createQuery()->get();
     }
 
     /**
@@ -72,8 +51,7 @@ abstract class Repository implements RepositoryInterface, Mappable
      */
     public function getItem($id)
     {
-        $item = $this->createQuery()->find($id);
-        return isset($item) ? $this->toMapper($item) : null;
+        return $this->createQuery()->find($id);
     }
 
     /**
@@ -81,7 +59,7 @@ abstract class Repository implements RepositoryInterface, Mappable
      */
     public function getItemsById(array $arrayOfId)
     {
-        return $this->toMappers($this->createQuery()->whereIn($this->createModel()->getKeyName(), $arrayOfId)->get());
+        return $this->createQuery()->whereIn($this->createModel()->getKeyName(), $arrayOfId)->get();
     }
 
     /**
@@ -98,7 +76,7 @@ abstract class Repository implements RepositoryInterface, Mappable
      */
     public function createItem(array $dataSet)
     {
-        return $this->toMapper(forward_static_call(([$this->getAttributeModel(), 'create']), $dataSet));
+        return forward_static_call(([$this->getAttributeModel(), 'create']), $dataSet);
     }
 
     /**

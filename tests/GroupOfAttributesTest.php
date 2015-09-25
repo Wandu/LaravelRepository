@@ -23,8 +23,8 @@ class GroupOfAttributesTest extends RepositoryTestCase
 
     public function testGroupOfAttributes()
     {
-        $articles = $this->articles->getItemsById([5,6,7,9,51,52]);
-        $users = $this->users->getItemsById($articles->pluck('username')->unique()->values()->toArray());
+//        $articles = $this->articles->getItemsById([5,6,7,9,51,52]);
+//        $users = $this->users->getItemsById($articles->pluck('username')->unique()->values()->toArray());
 //        print_r($users);
     }
 }
