@@ -10,6 +10,11 @@ class ArticleHitRepository extends Repository
     /** @var string */
     protected $model = ArticleHit::class;
 
+    /** @var array */
+    protected $orders = [
+        'id' => true,
+    ];
+
     /**
      * @param array $articleIds
      * @return \Illuminate\Support\Collection

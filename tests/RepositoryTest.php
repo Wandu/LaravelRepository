@@ -1,6 +1,8 @@
 <?php
 namespace Wandu\Laravel\Repository;
 
+use Mockery;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Wandu\Laravel\Repository\Stubs\Model\ArticleHit;
@@ -14,7 +16,21 @@ class RepositoryTest extends RepositoryTestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->hits = new ArticleHitRepository();
+    }
+
+    public function testGetItemWithCaching()
+    {
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher->shouldReceive('fire')->with('illuminate.query', Mockery::any())->once();
+
+        $this->connection->setEventDispatcher($dispatcher);
+
+        $this->hits->getItem(3);
+        $this->hits->getItem(3);
+        $this->hits->getItem(3);
+        $this->hits->getItem(3);
     }
 
     public function testFindItems()

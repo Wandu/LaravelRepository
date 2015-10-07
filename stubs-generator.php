@@ -1,10 +1,7 @@
 <?php
 use Faker\Factory;
-use Illuminate\Cache\FileStore;
-use Illuminate\Cache\Repository;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Filesystem\Filesystem;
 use Wandu\Laravel\Repository\Stubs\Model\Article;
 use Wandu\Laravel\Repository\Stubs\Model\ArticleHit;
 use Wandu\Laravel\Repository\Stubs\Model\Category;
@@ -46,6 +43,16 @@ $capsule->schema()->create('articles', function (Blueprint $table) {
     $table->timestamps();
 });
 
+/*
+CREATE TABLE `comments` (
+	`id`	INTEGER PRIMARY KEY AUTOINCREMENT,
+	`content`	varchar(100),
+	`vote`	INTEGER DEFAULT 0,
+	`ancestor_vote`	INTEGER DEFAULT 0,
+	`order`	VARBINARY(255) DEFAULT 000,
+	`ancestor_order`	VARBINARY(255) DEFAULT 000
+);
+*/
 $capsule->schema()->create('article_hits', function (Blueprint $table) {
     $table->bigIncrements('id');
     $table->bigInteger('article_id')->unsingied();

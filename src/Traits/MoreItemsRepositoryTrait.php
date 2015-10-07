@@ -11,7 +11,7 @@ trait MoreItemsRepositoryTrait
      */
     public function getFirstItem()
     {
-        return $this->applyScopeFirstItem($this->createQuery())->first();
+        return $this->applyScopeOrders($this->createQuery())->first();
     }
 
     /**
@@ -42,22 +42,25 @@ trait MoreItemsRepositoryTrait
 
     /**
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    protected function applyScopeFirstItem(Builder $query)
-    {
-        return $this->applyScopeOrders($query);
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param \Illuminate\Database\Eloquent\Model $criteria
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function applyScopeNextItems(Builder $query, Model $criteria)
     {
-        return $this->applyScopeOrders($query)
-            ->where($criteria->getKeyName(), '<', $criteria->getKey());
+        $orders = $this->orders;
+        $query = $query->where(function (Builder $query) use ($orders, $criteria) {
+            $queryOrders = [];
+            foreach ($orders as $key => $order) {
+                $query->orWhere(function (Builder $query) use ($key, $order, $queryOrders, $criteria) {
+                    foreach ($queryOrders as $queryOrder) {
+                        $query->where($queryOrder[0], $criteria[$queryOrder[0]]);
+                    }
+                    $query->where($key, $order ? '>' : '<', $criteria[$key]);
+                });
+                $queryOrders[] = [$key, $order];
+            }
+        });
+        return $this->applyScopeOrders($query);
     }
 
     /**
@@ -67,7 +70,19 @@ trait MoreItemsRepositoryTrait
      */
     protected function applyScopePrevItems(Builder $query, Model $criteria)
     {
-        return $this->applyScopeOrders($query, true)
-            ->where($criteria->getKeyName(), '>', $criteria->getKey());
+        $orders = $this->orders;
+        $query = $query->where(function (Builder $query) use ($orders, $criteria) {
+            $queryOrders = [];
+            foreach ($orders as $key => $order) {
+                $query->orWhere(function (Builder $query) use ($key, $order, $queryOrders, $criteria) {
+                    foreach ($queryOrders as $queryOrder) {
+                        $query->where($queryOrder[0], $criteria[$queryOrder[0]]);
+                    }
+                    $query->where($key, $order ? '<' : '>', $criteria[$key]);
+                });
+                $queryOrders[] = [$key, $order];
+            }
+        });
+        return $this->applyScopeOrders($query, true);
     }
 }

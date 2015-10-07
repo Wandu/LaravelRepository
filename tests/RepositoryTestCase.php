@@ -1,11 +1,13 @@
 <?php
 namespace Wandu\Laravel\Repository;
 
+use Illuminate\Contracts\Events\Dispatcher;
 use PHPUnit_Framework_TestCase;
 use Illuminate\Cache\FileStore;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Filesystem\Filesystem;
+use Mockery;
 
 class RepositoryTestCase extends PHPUnit_Framework_TestCase
 {
@@ -14,6 +16,9 @@ class RepositoryTestCase extends PHPUnit_Framework_TestCase
 
     /** @var \Illuminate\Cache\Repository */
     protected $cache;
+
+    /** @var \Illuminate\Database\Connection */
+    protected $connection;
 
     public function setUp()
     {
@@ -32,10 +37,13 @@ class RepositoryTestCase extends PHPUnit_Framework_TestCase
 
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
+
+        $this->connection = $capsule->getDatabaseManager()->connection('default');
     }
 
     public function tearDown()
     {
         $this->fileSystem->delete('./stubs-real.sqlite');
+        Mockery::close();
     }
 }

@@ -2,6 +2,8 @@
 namespace Wandu\Laravel\Repository;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 abstract class Repository implements RepositoryInterface
 {
@@ -15,6 +17,9 @@ abstract class Repository implements RepositoryInterface
     protected $orders = [
         'id' => false,
     ];
+
+    /** @var array */
+    protected $cached = [];
 
     /**
      * @param \Wandu\Laravel\Repository\Repository $parent
@@ -35,7 +40,7 @@ abstract class Repository implements RepositoryInterface
         foreach ($where as $key => $value) {
             $query = $query->where($key, $value);
         }
-        return $query->get();
+        return $this->cacheItems($query->get());
     }
 
     /**
@@ -43,7 +48,7 @@ abstract class Repository implements RepositoryInterface
      */
     public function getAllItems()
     {
-        return $this->createQuery()->get();
+        return $this->cacheItems($this->applyScopeOrders($this->createQuery())->get());
     }
 
     /**
@@ -51,7 +56,13 @@ abstract class Repository implements RepositoryInterface
      */
     public function getItem($id)
     {
-        return $this->createQuery()->find($id);
+        if (!isset($this->cached[$id])) {
+            $item = $this->createQuery()->find($id);
+            if (isset($item)) {
+                $this->cacheItem($item);
+            }
+        }
+        return isset($this->cached[$id]) ? $this->cached[$id] : null;
     }
 
     /**
@@ -59,7 +70,9 @@ abstract class Repository implements RepositoryInterface
      */
     public function getItemsById(array $arrayOfId)
     {
-        return $this->createQuery()->whereIn($this->createModel()->getKeyName(), $arrayOfId)->get();
+        $keyName = $this->getKeyName();
+        $items = $this->createQuery()->whereIn($keyName, $arrayOfId)->get();
+        return $this->cacheItems($items);
     }
 
     /**
@@ -68,7 +81,8 @@ abstract class Repository implements RepositoryInterface
     public function updateItem($id, array $dataSet)
     {
         $this->createQuery()->where($this->getKeyName(), $id)->update($dataSet);
-        return $this->getItem($id);
+        $this->flushItem($id);
+        return $this->cacheItem($this->getItem($id));
     }
 
     /**
@@ -76,7 +90,9 @@ abstract class Repository implements RepositoryInterface
      */
     public function createItem(array $dataSet)
     {
-        return forward_static_call(([$this->getAttributeModel(), 'create']), $dataSet);
+        return $this->cacheItem(
+            forward_static_call(([$this->getAttributeModel(), 'create']), $dataSet)
+        );
     }
 
     /**
@@ -85,6 +101,35 @@ abstract class Repository implements RepositoryInterface
     public function deleteItem($id)
     {
         $this->createQuery()->where($this->createModel()->getKeyName(), $id)->delete();
+        $this->flushItem($id);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function cacheItem(Model $item)
+    {
+        $this->cached[$item->getKey()] = $item;
+        return $item;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function cacheItems(Collection $items)
+    {
+        foreach ($items as $item) {
+            $this->cacheItem($item);
+        }
+        return $items;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function flushItem($id)
+    {
+        unset($this->cached[$id]);
     }
 
     /**
