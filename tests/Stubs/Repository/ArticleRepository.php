@@ -4,11 +4,11 @@ namespace Wandu\Laravel\Repository\Stubs\Repository;
 use Wandu\Laravel\Repository\MoreItemsRepositoryInterface;
 use Wandu\Laravel\Repository\Repository;
 use Wandu\Laravel\Repository\Stubs\Model\Article;
-use Wandu\Laravel\Repository\Traits\MoreItemsRepositoryTrait;
+use Wandu\Laravel\Repository\Traits\UserMoreItemsRepository;
 
 class ArticleRepository extends Repository implements MoreItemsRepositoryInterface
 {
-    use MoreItemsRepositoryTrait;
+    use UserMoreItemsRepository;
 
     /** @var string */
     protected $model = Article::class;

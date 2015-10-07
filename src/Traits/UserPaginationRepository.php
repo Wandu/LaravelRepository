@@ -1,7 +1,7 @@
 <?php
 namespace Wandu\Laravel\Repository\Traits;
 
-trait PaginationRepositoryTrait
+trait UserPaginationRepository
 {
     /**
      * @param int $skip

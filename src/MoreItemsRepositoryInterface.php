@@ -4,21 +4,21 @@ namespace Wandu\Laravel\Repository;
 interface MoreItemsRepositoryInterface extends RepositoryInterface
 {
     /**
-     * @return \Wandu\Laravel\Repository\DataMapper\Datamapper
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function getFirstItem();
 
     /**
      * @param string $itemId
      * @param int $length
-     * @return \Wandu\Laravel\Repository\DataMapper\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getNextItems($itemId, $length = 10);
 
     /**
      * @param string $itemId
      * @param int $length
-     * @return \Wandu\Laravel\Repository\DataMapper\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getPrevItems($itemId, $length = 10);
 }

@@ -22,10 +22,10 @@ abstract class Repository implements RepositoryInterface
     protected $cached = [];
 
     /**
-     * @param \Wandu\Laravel\Repository\Repository $parent
+     * @param \Wandu\Laravel\Repository\RepositoryInterface $parent
      * @return self
      */
-    public function setParent(Repository $parent)
+    public function setParent(RepositoryInterface $parent)
     {
         $this->parent = $parent;
         return $this;

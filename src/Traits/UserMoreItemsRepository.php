@@ -4,7 +4,7 @@ namespace Wandu\Laravel\Repository\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-trait MoreItemsRepositoryTrait
+trait UserMoreItemsRepository
 {
     /**
      * @return \Illuminate\Database\Eloquent\Model

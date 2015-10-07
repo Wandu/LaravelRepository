@@ -4,11 +4,11 @@ namespace Wandu\Laravel\Repository\Stubs\Repository;
 use Wandu\Laravel\Repository\MoreItemsRepositoryInterface;
 use Wandu\Laravel\Repository\Repository;
 use Wandu\Laravel\Repository\Stubs\Model\Comment;
-use Wandu\Laravel\Repository\Traits\MoreItemsRepositoryTrait;
+use Wandu\Laravel\Repository\Traits\UserMoreItemsRepository;
 
 class CommentRepository extends Repository implements MoreItemsRepositoryInterface
 {
-    use MoreItemsRepositoryTrait;
+    use UserMoreItemsRepository;
 
     /** @var string */
     protected $model = Comment::class;
