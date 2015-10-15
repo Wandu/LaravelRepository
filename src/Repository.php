@@ -32,6 +32,14 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
+     * @return int
+     */
+    public function countAll()
+    {
+        return $this->createQuery()->count();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function findItems(array $where)

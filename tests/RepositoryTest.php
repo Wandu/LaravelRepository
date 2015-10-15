@@ -188,4 +188,9 @@ class RepositoryTest extends RepositoryTestCase
 
         $this->assertNull($this->hits->getItem(3));
     }
+
+    public function testCountAll()
+    {
+        $this->assertSame(400, $this->hits->countAll());
+    }
 }

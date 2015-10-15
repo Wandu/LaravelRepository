@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 interface RepositoryInterface
 {
     /**
+     * @return int
+     */
+    public function countAll();
+
+    /**
      * @param array $where
      * @return \Illuminate\Database\Eloquent\Collection
      */
