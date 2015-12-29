@@ -21,6 +21,9 @@ abstract class Repository implements RepositoryInterface
     /** @var array */
     protected $cached = [];
 
+    /** @var bool */
+    protected $cacheEnabled = true;
+
     /**
      * @param \Wandu\Laravel\Repository\RepositoryInterface $parent
      * @return self
@@ -117,7 +120,9 @@ abstract class Repository implements RepositoryInterface
      */
     public function cacheItem(Model $item)
     {
-        $this->cached[$item->getKey()] = $item;
+        if ($this->cacheEnabled) {
+            $this->cached[$item->getKey()] = $item;
+        }
         return $item;
     }
 
@@ -126,8 +131,10 @@ abstract class Repository implements RepositoryInterface
      */
     public function cacheItems(Collection $items)
     {
-        foreach ($items as $item) {
-            $this->cacheItem($item);
+        if ($this->cacheEnabled) {
+            foreach ($items as $item) {
+                $this->cacheItem($item);
+            }
         }
         return $items;
     }
@@ -138,6 +145,24 @@ abstract class Repository implements RepositoryInterface
     public function flushItem($id)
     {
         unset($this->cached[$id]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function flushAllItems()
+    {
+        $this->cached = [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function cacheEnable($cacheEnabled = true)
+    {
+        $lastCacheEnabled = $this->cacheEnabled;
+        $this->cacheEnabled = $cacheEnabled;
+        return $lastCacheEnabled;
     }
 
     /**

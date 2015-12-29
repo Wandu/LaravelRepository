@@ -49,6 +49,7 @@ interface RepositoryInterface
 
     /**
      * @param string $id
+     * @return void
      */
     public function deleteItem($id);
 
@@ -66,6 +67,18 @@ interface RepositoryInterface
 
     /**
      * @param string $id
+     * @return void
      */
     public function flushItem($id);
+
+    /**
+     * @return void
+     */
+    public function flushAllItems();
+
+    /**
+     * @param bool $cacheEnabled
+     * @return bool
+     */
+    public function cacheEnable($cacheEnabled = true);
 }

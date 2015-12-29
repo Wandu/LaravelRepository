@@ -33,6 +33,28 @@ class RepositoryTest extends RepositoryTestCase
         $this->hits->getItem(3);
     }
 
+    public function testGetItemWithoutCaching()
+    {
+        $dispatcher = Mockery::mock(Dispatcher::class);
+        $dispatcher->shouldReceive('fire')->with('illuminate.query', Mockery::any())->times(5);
+
+        $this->connection->setEventDispatcher($dispatcher);
+
+        $this->assertTrue($this->hits->cacheEnable(false));
+        $this->assertFalse($this->hits->cacheEnable(false));
+
+        $this->hits->getItem(3);
+        $this->hits->getItem(3);
+        $this->hits->getItem(3);
+        $this->hits->getItem(3);
+
+        $this->assertFalse($this->hits->cacheEnable(true));
+        $this->assertTrue($this->hits->cacheEnable(true));
+
+        $this->hits->getItem(3);
+        $this->hits->getItem(3);
+    }
+
     public function testFindItems()
     {
         $items = $this->hits->findItems(['article_id' => 30]);
