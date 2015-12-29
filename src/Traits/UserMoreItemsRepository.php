@@ -37,7 +37,7 @@ trait UserMoreItemsRepository
         return $this->applyScopePrevItems(
             $this->createQuery(),
             $this->createQuery()->find($itemId)
-        )->take($length)->get()->reverse();
+        )->take($length)->get()->reverse()->values();
     }
 
     /**

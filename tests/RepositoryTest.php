@@ -23,7 +23,7 @@ class RepositoryTest extends RepositoryTestCase
     public function testGetItemWithCaching()
     {
         $dispatcher = Mockery::mock(Dispatcher::class);
-        $dispatcher->shouldReceive('fire')->with('illuminate.query', Mockery::any())->once();
+        $dispatcher->shouldReceive('fire')->once();
 
         $this->connection->setEventDispatcher($dispatcher);
 
@@ -36,7 +36,7 @@ class RepositoryTest extends RepositoryTestCase
     public function testGetItemWithoutCaching()
     {
         $dispatcher = Mockery::mock(Dispatcher::class);
-        $dispatcher->shouldReceive('fire')->with('illuminate.query', Mockery::any())->times(5);
+        $dispatcher->shouldReceive('fire')->times(5);
 
         $this->connection->setEventDispatcher($dispatcher);
 

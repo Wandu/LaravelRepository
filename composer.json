@@ -7,6 +7,14 @@
         "illuminate/database": "^5.1",
         "illuminate/cache": "^5.1"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8",
+        "mockery/mockery": "^0.9",
+        "illuminate/filesystem": "^5.1",
+        "league/flysystem": "^1.0",
+        "fzaninotto/faker": "^1.5",
+        "doctrine/dbal": "*"
+    },
     "autoload": {
         "psr-4": {
             "Wandu\\Laravel\\Repository\\": "src/"
@@ -16,13 +24,6 @@
         "psr-4": {
             "Wandu\\Laravel\\Repository\\": "tests/"
         }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^4.8",
-        "mockery/mockery": "^0.9",
-        "illuminate/filesystem": "^5.1",
-        "league/flysystem": "^1.0",
-        "fzaninotto/faker": "^1.5"
     },
     "extra": {
         "branch-alias": {
