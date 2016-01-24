@@ -7,9 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class Repository implements RepositoryInterface
 {
-    /** @var \Wandu\Laravel\Repository\Repository */
-    protected $parent;
-
     /** @var string */
     protected $model;
 
@@ -25,16 +22,6 @@ abstract class Repository implements RepositoryInterface
     protected $cacheEnabled = true;
 
     /**
-     * @param \Wandu\Laravel\Repository\RepositoryInterface $parent
-     * @return self
-     */
-    public function setParent(RepositoryInterface $parent)
-    {
-        $this->parent = $parent;
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function countAll()
@@ -48,7 +35,7 @@ abstract class Repository implements RepositoryInterface
     public function findItems(array $where)
     {
         $query = $this->createQuery();
-        foreach ($where as $key => $value) {
+        foreach ($this->filterWhere($where) as $key => $value) {
             $query = $query->where($key, $value);
         }
         return $this->cacheItems($query->get());
@@ -91,7 +78,7 @@ abstract class Repository implements RepositoryInterface
      */
     public function updateItem($id, array $dataSet)
     {
-        $this->createQuery()->where($this->getKeyName(), $id)->update($dataSet);
+        $this->createQuery()->where($this->getKeyName(), $id)->update($this->filterDataSet($dataSet));
         $this->flushItem($id);
         return $this->cacheItem($this->getItem($id));
     }
@@ -102,7 +89,7 @@ abstract class Repository implements RepositoryInterface
     public function createItem(array $dataSet)
     {
         return $this->cacheItem(
-            forward_static_call(([$this->getAttributeModel(), 'create']), $dataSet)
+            forward_static_call(([$this->getAttributeModel(), 'create']), $this->filterDataSet($dataSet))
         );
     }
 
@@ -163,6 +150,24 @@ abstract class Repository implements RepositoryInterface
         $lastCacheEnabled = $this->cacheEnabled;
         $this->cacheEnabled = $cacheEnabled;
         return $lastCacheEnabled;
+    }
+
+    /**
+     * @param array $dataSet
+     * @return array
+     */
+    public function filterDataSet(array $dataSet)
+    {
+        return $dataSet;
+    }
+
+    /**
+     * @param array $where
+     * @return array
+     */
+    public function filterWhere(array $where)
+    {
+        return $where;
     }
 
     /**
