@@ -29,6 +29,29 @@ abstract class Repository implements RepositoryInterface
         return $this->createQuery()->count();
     }
 
+//    /**
+//     * @param array $items
+//     */
+//    public function insertItems(array $items)
+//    {
+//        if(!isArrayOfArray($items)) {
+//            throw new InvalidArgumentException('is not array of array');
+//        }
+//        if (count($items) === 0) {
+//            return;
+//        }
+//
+//        // 10개 미만일 때는 그냥 넣으면 됨. *-_-*..
+//        if (count($items) <= 10) {
+//            $this->createQuery()->insert($items);
+//            return;
+//        }
+//
+//        foreach (array_chunk($items, 10) as $chunkedItems) {
+//            $this->createQuery()->insert($chunkedItems);
+//        }
+//    }
+
     /**
      * {@inheritdoc}
      */
@@ -78,9 +101,9 @@ abstract class Repository implements RepositoryInterface
      */
     public function updateItem($id, array $dataSet)
     {
-        $this->createQuery()->where($this->getKeyName(), $id)->update($this->filterDataSet($dataSet));
-        $this->flushItem($id);
-        return $this->cacheItem($this->getItem($id));
+        $item = $this->getItem($id)->fill($dataSet);
+        $item->save();
+        return $item;
     }
 
     /**
