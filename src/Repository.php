@@ -101,7 +101,7 @@ abstract class Repository implements RepositoryInterface
      */
     public function updateItem($id, array $dataSet)
     {
-        $item = $this->getItem($id)->fill($dataSet);
+        $item = $this->getItem($id)->fill($this->filterDataSet($dataSet));
         $item->save();
         return $item;
     }
