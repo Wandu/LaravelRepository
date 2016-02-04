@@ -4,13 +4,17 @@ namespace Wandu\Laravel\Repository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 
 abstract class Repository implements RepositoryInterface
 {
     /** @var string */
     protected $model;
 
-    /** @var array */
+    /**
+     * @todo get default orders from model's primaryKey.
+     * @var array
+     */
     protected $orders = [
         'id' => false,
     ];
@@ -22,35 +26,36 @@ abstract class Repository implements RepositoryInterface
     protected $cacheEnabled = true;
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function countAll()
     {
         return $this->createQuery()->count();
     }
 
-//    /**
-//     * @param array $items
-//     */
-//    public function insertItems(array $items)
-//    {
-//        if(!isArrayOfArray($items)) {
-//            throw new InvalidArgumentException('is not array of array');
-//        }
-//        if (count($items) === 0) {
-//            return;
-//        }
-//
-//        // 10개 미만일 때는 그냥 넣으면 됨. *-_-*..
-//        if (count($items) <= 10) {
-//            $this->createQuery()->insert($items);
-//            return;
-//        }
-//
-//        foreach (array_chunk($items, 10) as $chunkedItems) {
-//            $this->createQuery()->insert($chunkedItems);
-//        }
-//    }
+    /**
+     * @todo data filter
+     * {@inheritdoc}
+     */
+    public function insertItems(array $items)
+    {
+        if ($items !== array_values($items)) {
+            throw new InvalidArgumentException('first parameter must be array of array.');
+        }
+        if (count($items) === 0) {
+            return;
+        }
+
+        if (count($items) <= 10) {
+            $this->createQuery()->insert($items);
+            return;
+        }
+
+        // more than 10, chunk insert items.
+        foreach (array_chunk($items, 10) as $chunkedItems) {
+            $this->createQuery()->insert($chunkedItems);
+        }
+    }
 
     /**
      * {@inheritdoc}

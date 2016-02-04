@@ -48,6 +48,11 @@ interface RepositoryInterface
     public function createItem(array $dataSet);
 
     /**
+     * @param array $items
+     */
+    public function insertItems(array $items);
+
+    /**
      * @param string $id
      * @return void
      */
