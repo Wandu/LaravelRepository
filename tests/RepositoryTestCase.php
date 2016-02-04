@@ -1,13 +1,12 @@
 <?php
 namespace Wandu\Laravel\Repository;
 
-use Illuminate\Contracts\Events\Dispatcher;
-use PHPUnit_Framework_TestCase;
 use Illuminate\Cache\FileStore;
 use Illuminate\Cache\Repository;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Filesystem\Filesystem;
 use Mockery;
+use PHPUnit_Framework_TestCase;
 
 class RepositoryTestCase extends PHPUnit_Framework_TestCase
 {
